@@ -4,8 +4,28 @@ const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
-const db = require('./services/db');
-const telegramService = require('./services/telegram');
+
+let db;
+try {
+  db = require('./services/db');
+} catch (err) {
+  try {
+    db = require('./db');
+  } catch (e) {
+    throw err;
+  }
+}
+
+let telegramService;
+try {
+  telegramService = require('./services/telegram');
+} catch (err) {
+  try {
+    telegramService = require('./telegram');
+  } catch (e) {
+    throw err;
+  }
+}
 
 const app = express();
 const PORT = process.env.PORT || 3000;
