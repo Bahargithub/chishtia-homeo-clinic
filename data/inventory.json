@@ -1,0 +1,112 @@
+[
+  {
+    "id": "MED-001",
+    "name": "Nux Vomica",
+    "potency": "30C",
+    "type": "Dilution",
+    "stock": 45,
+    "unit": "ml",
+    "minAlert": 15,
+    "lastUpdated": "2026-11-20T08:00:00.000Z"
+  },
+  {
+    "id": "MED-002",
+    "name": "Nux Vomica",
+    "potency": "200C",
+    "type": "Dilution",
+    "stock": 30,
+    "unit": "ml",
+    "minAlert": 15,
+    "lastUpdated": "2026-11-20T08:00:00.000Z"
+  },
+  {
+    "id": "MED-003",
+    "name": "Arnica Montana",
+    "potency": "200C",
+    "type": "Dilution",
+    "stock": 10,
+    "unit": "ml",
+    "minAlert": 15,
+    "lastUpdated": "2026-11-20T08:00:00.000Z"
+  },
+  {
+    "id": "MED-004",
+    "name": "Thuja Occidentalis",
+    "potency": "1M",
+    "type": "Dilution",
+    "stock": 8,
+    "unit": "ml",
+    "minAlert": 15,
+    "lastUpdated": "2026-11-20T08:00:00.000Z"
+  },
+  {
+    "id": "MED-005",
+    "name": "Lycopodium Clavatum",
+    "potency": "200C",
+    "type": "Dilution",
+    "stock": 60,
+    "unit": "ml",
+    "minAlert": 15,
+    "lastUpdated": "2026-11-20T08:00:00.000Z"
+  },
+  {
+    "id": "MED-006",
+    "name": "Berberis Vulgaris",
+    "potency": "Q (Mother Tincture)",
+    "type": "Mother Tincture",
+    "stock": 12,
+    "unit": "ml",
+    "minAlert": 20,
+    "lastUpdated": "2026-11-20T08:00:00.000Z"
+  },
+  {
+    "id": "MED-007",
+    "name": "Bryonia Alba",
+    "potency": "30C",
+    "type": "Dilution",
+    "stock": 35,
+    "unit": "ml",
+    "minAlert": 15,
+    "lastUpdated": "2026-11-20T08:00:00.000Z"
+  },
+  {
+    "id": "MED-008",
+    "name": "Sulphur",
+    "potency": "200C",
+    "type": "Dilution",
+    "stock": 25,
+    "unit": "ml",
+    "minAlert": 15,
+    "lastUpdated": "2026-11-20T08:00:00.000Z"
+  },
+  {
+    "id": "MED-009",
+    "name": "Rhus Toxicodendron",
+    "potency": "200C",
+    "type": "Dilution",
+    "stock": 5,
+    "unit": "ml",
+    "minAlert": 15,
+    "lastUpdated": "2026-11-20T08:00:00.000Z"
+  },
+  {
+    "id": "MED-010",
+    "name": "Ocimum Sanctum",
+    "potency": "Q (Mother Tincture)",
+    "type": "Mother Tincture",
+    "stock": 100,
+    "unit": "ml",
+    "minAlert": 25,
+    "lastUpdated": "2026-11-20T08:00:00.000Z"
+  },
+  {
+    "id": "MED-011",
+    "name": "Five Phos",
+    "potency": "6X",
+    "type": "Biochemic",
+    "stock": 3,
+    "unit": "file/bottle",
+    "minAlert": 2,
+    "lastUpdated": "2026-11-20T08:00:00.000Z"
+  }
+]

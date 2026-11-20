@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ডাক্তার ড্যাশবোর্ড - চিশতিয়া হোমিও ক্লিনিক (ডাঃ মোঃ আলাউদ্দিন)</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Hind Siliguri -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Hind Siliguri"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Hind Siliguri', sans-serif; }
+    .tab-active {
+      background-color: #047857 !important;
+      color: #ffffff !important;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen">
+
+  <!-- ================= AUTH CONTAINER (Shown when logged out) ================= -->
+  <div id="loginSection" class="min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-8 border border-slate-200 text-center">
+      <div class="relative w-20 h-20 mx-auto mb-4">
+        <img src="/images/doctor.jpg" alt="ডাঃ মোঃ আলাউদ্দিন" class="w-20 h-20 rounded-2xl object-cover border-2 border-emerald-500 shadow-md">
+      </div>
+      <h2 class="text-xl font-black text-slate-800">চিশতিয়া হোমিও ক্লিনিক</h2>
+      <p class="text-xs text-emerald-700 font-semibold mt-0.5">ডাঃ মোঃ আলাউদ্দিন • কন্ট্রোল প্যানেল</p>
+      <p class="text-[11px] text-slate-400 mt-1 mb-6">অ্যাপয়েন্টমেন্ট, প্রেসক্রিপশন ও ইনভেন্টরি পরিচালনা</p>
+      
+      <form id="loginForm" class="space-y-4">
+        <div>
+          <label class="block text-left text-xs font-semibold text-slate-700 mb-1">এডমিন পাসওয়ার্ড</label>
+          <input 
+            type="password" 
+            id="adminPasswordInput" 
+            required
+            placeholder="পাসওয়ার্ড দিন (ডিফল্ট: admin123)" 
+            class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 text-sm"
+          >
+        </div>
+        <button 
+          type="submit" 
+          class="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-sm shadow transition"
+        >
+          লগইন করুন
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= DASHBOARD CONTAINER (Shown when logged in) ================= -->
+  <div id="dashboardSection" class="hidden min-h-screen flex flex-col">
+    
+    <!-- Top Nav -->
+    <header class="bg-slate-900 text-white sticky top-0 z-30 shadow-md">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+          <img src="/images/doctor.jpg" alt="ডাঃ মোঃ আলাউদ্দিন" class="w-10 h-10 rounded-xl object-cover border border-emerald-400">
+          <div>
+            <h1 class="text-base sm:text-lg font-bold leading-tight" id="dashClinicName">চিশতিয়া হোমিও ক্লিনিক</h1>
+            <p class="text-[11px] text-emerald-400 font-medium" id="dashDoctorName">ডাঃ মোঃ আলাউদ্দিন (হোমিওপ্যাথিক চিকিৎসক)</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button onclick="openSettingsModal()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-medium flex items-center gap-1.5 transition text-slate-200">
+            <i data-lucide="settings" class="w-4 h-4 text-emerald-400"></i>
+            <span class="hidden sm:inline">ক্লিনিক ও টেলিগ্রাম সেটিংস</span>
+          </button>
+          <a href="/" target="_blank" class="px-3 py-1.5 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-xs font-semibold flex items-center gap-1.5 transition text-white">
+            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+            <span class="hidden sm:inline">রোগীর পোর্টাল</span>
+          </a>
+          <button onclick="logout()" class="p-2 text-slate-400 hover:text-red-400 rounded-xl hover:bg-slate-800 transition" title="লগআউট">
+            <i data-lucide="log-out" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="bg-slate-950 border-t border-slate-800 px-4 sm:px-6 overflow-x-auto">
+        <div class="max-w-7xl mx-auto flex items-center gap-1 text-xs py-2 whitespace-nowrap">
+          <button onclick="switchTab('appointments')" id="tabBtn-appointments" class="tab-btn tab-active px-3.5 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition text-slate-300">
+            <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
+            <span>শিডিউল ও অ্যাপয়েন্টমেন্ট</span>
+          </button>
+          <button onclick="switchTab('prescriptions')" id="tabBtn-prescriptions" class="tab-btn px-3.5 py-1.5 rounded-lg font-semibold flex items-center gap-1.5 transition text-slate-300 hover:bg-slate-800">
+            <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
+            <span>ডিজিটাল প্রেসক্রিপশন</span>
+          </button>
+          <button onclick="switchTab('cases')" id="tabBtn-cases" class="tab-btn px-3.5 py-1.5 rounded-lg font-semibold flex items-center gap-1.5 transition text-slate-300 hover:bg-slate-800">
+            <i data-lucide="clipboard-check" class="w-3.5 h-3.5"></i>
+            <span>হোমিও কেস টেকিং শিট</span>
+          </button>
+          <button onclick="switchTab('inventory')" id="tabBtn-inventory" class="tab-btn px-3.5 py-1.5 rounded-lg font-semibold flex items-center gap-1.5 transition text-slate-300 hover:bg-slate-800">
+            <i data-lucide="package" class="w-3.5 h-3.5"></i>
+            <span>ওষুধ ইনভেন্টরি ও স্টক</span>
+            <span id="lowStockBadge" class="hidden bg-red-600 text-white text-[10px] px-1.5 py-0.2 rounded-full font-bold">0</span>
+          </button>
+          <button onclick="switchTab('followups')" id="tabBtn-followups" class="tab-btn px-3.5 py-1.5 rounded-lg font-semibold flex items-center gap-1.5 transition text-slate-300 hover:bg-slate-800">
+            <i data-lucide="bell-ring" class="w-3.5 h-3.5"></i>
+            <span>ফলো-আপ রিমাইন্ডার</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full flex-1 space-y-6">
+
+      <!-- ================= 1. APPOINTMENTS TAB ================= -->
+      <div id="tabContent-appointments" class="tab-content space-y-6">
+        
+        <!-- KPI Stats Grid -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-3.5">
+            <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl">
+              <i data-lucide="calendar" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <p class="text-xs font-semibold text-slate-500">আজকের মোট শিডিউল</p>
+              <h3 class="text-2xl font-bold text-slate-800" id="statTodayTotal">০</h3>
+            </div>
+          </div>
+
+          <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-3.5">
+            <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl">
+              <i data-lucide="clock" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <p class="text-xs font-semibold text-slate-500">অপেক্ষমান (Pending)</p>
+              <h3 class="text-2xl font-bold text-amber-600" id="statPending">০</h3>
+            </div>
+          </div>
+
+          <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-3.5">
+            <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl">
+              <i data-lucide="check-circle" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <p class="text-xs font-semibold text-slate-500">নিশ্চিতকৃত (Confirmed)</p>
+              <h3 class="text-2xl font-bold text-emerald-600" id="statConfirmed">০</h3>
+            </div>
+          </div>
+
+          <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-3.5">
+            <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl">
+              <i data-lucide="user-check" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <p class="text-xs font-semibold text-slate-500">রোগী দেখা সম্পন্ন</p>
+              <h3 class="text-2xl font-bold text-purple-600" id="statCompleted">০</h3>
+            </div>
+          </div>
+        </div>
+
+        <!-- Controls: Date, Search, Filter -->
+        <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-stretch md:items-center gap-3">
+          <div class="flex flex-wrap items-center gap-2">
+            <div class="flex items-center gap-1.5">
+              <label class="text-xs font-semibold text-slate-600">তারিখ:</label>
+              <input type="date" id="filterDate" class="text-xs border border-slate-300 rounded-lg px-2.5 py-1.5 focus:ring-1 focus:ring-emerald-500">
+            </div>
+
+            <button onclick="setDateToday()" class="text-xs px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-medium">আজ</button>
+            <button onclick="setDateTomorrow()" class="text-xs px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-medium">আগামীকাল</button>
+            <button onclick="clearDateFilter()" class="text-xs px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-medium">সব তারিখ</button>
+
+            <select id="filterStatus" class="text-xs border border-slate-300 rounded-lg px-2.5 py-1.5">
+              <option value="All">সব স্ট্যাটাস</option>
+              <option value="Pending">Pending (অপেক্ষমান)</option>
+              <option value="Confirmed">Confirmed (নিশ্চিত)</option>
+              <option value="Completed">Completed (সম্পন্ন)</option>
+              <option value="Cancelled">Cancelled (বাতিল)</option>
+            </select>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <div class="relative w-full md:w-56">
+              <input type="text" id="searchInput" placeholder="নাম, ফোন বা সিরিয়াল..." class="w-full text-xs border border-slate-300 rounded-lg pl-8 pr-3 py-1.5 focus:ring-1 focus:ring-emerald-500">
+              <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5"></i>
+            </div>
+            <button onclick="exportToCSV()" class="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-lg text-xs font-semibold flex items-center gap-1 transition shrink-0" title="এক্সেল ডাউনলোড">
+              <i data-lucide="download" class="w-3.5 h-3.5"></i>
+              <span>CSV</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Appointments Table -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+          <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+            <h2 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+              <i data-lucide="users" class="w-4 h-4 text-emerald-600"></i>
+              <span>রোগীদের শিডিউল ও অ্যাপয়েন্টমেন্ট তালিকা</span>
+              <span id="appointmentCountBadge" class="bg-emerald-100 text-emerald-800 text-[11px] font-bold px-2 py-0.5 rounded-full">০ জন</span>
+            </h2>
+            <button onclick="loadAppointments()" class="text-xs text-slate-500 hover:text-emerald-600 flex items-center gap-1">
+              <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+              <span>রিফ্রেশ</span>
+            </button>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-slate-700">
+              <thead class="bg-slate-50 text-slate-600 uppercase font-semibold text-[11px] border-b border-slate-200">
+                <tr>
+                  <th class="px-4 py-3">সিরিয়াল নং</th>
+                  <th class="px-4 py-3">রোগীর নাম ও বয়স</th>
+                  <th class="px-4 py-3">যোগাযোগ / মোবাইল</th>
+                  <th class="px-4 py-3">তারিখ ও সময়</th>
+                  <th class="px-4 py-3">লক্ষণ ও পেমেন্ট</th>
+                  <th class="px-4 py-3">স্ট্যাটাস</th>
+                  <th class="px-4 py-3 text-right">ক্লিনিক্যাল অ্যাকশন</th>
+                </tr>
+              </thead>
+              <tbody id="appointmentTableBody" class="divide-y divide-slate-100">
+                <tr>
+                  <td colspan="7" class="text-center py-8 text-slate-400">ডাটা লোড হচ্ছে...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ================= 2. DIGITAL PRESCRIPTIONS TAB ================= -->
+      <div id="tabContent-prescriptions" class="tab-content hidden space-y-6">
+        <div class="flex justify-between items-center">
+          <div>
+            <h2 class="text-base font-bold text-slate-800">হোমিওপ্যাথিক ডিজিটাল প্রেসক্রিপশন রেকর্ড</h2>
+            <p class="text-xs text-slate-500">রোগীর নাম ও রেমিডি দিয়ে ফিল্টার ও প্রিন্ট করুন</p>
+          </div>
+          <button onclick="openNewPrescriptionModal()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow flex items-center gap-1.5 transition">
+            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+            <span>নতুন প্রেসক্রিপশন লিখুন</span>
+          </button>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-slate-700">
+              <thead class="bg-slate-50 text-slate-600 uppercase font-semibold text-[11px] border-b border-slate-200">
+                <tr>
+                  <th class="px-4 py-3">Rx নং</th>
+                  <th class="px-4 py-3">রোগীর নাম ও মোবাইল</th>
+                  <th class="px-4 py-3">রোগ নির্ণয় / সমস্যা</th>
+                  <th class="px-4 py-3">প্রেসক্রাইবকৃত রেমিডি (ওষুধ)</th>
+                  <th class="px-4 py-3">মেয়াদ ও পরবর্তী ভিজিট</th>
+                  <th class="px-4 py-3 text-right">অ্যাকশন</th>
+                </tr>
+              </thead>
+              <tbody id="prescriptionsTableBody" class="divide-y divide-slate-100">
+                <tr>
+                  <td colspan="6" class="text-center py-8 text-slate-400">কোনো প্রেসক্রিপশন তৈরি করা হয়নি</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 3. CONSTITUTIONAL CASE SHEET TAB ================= -->
+      <div id="tabContent-cases" class="tab-content hidden space-y-6">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+          <div>
+            <h2 class="text-base font-bold text-slate-800">হোমিওপ্যাথিক কেস-টেকিং ও ধাতুগত প্রোফাইল</h2>
+            <p class="text-xs text-slate-500">মায়াজম, গরমকাতর/শীতকাতর, মানসিক লক্ষণ ও খাদ্য রুচির বিবরণ</p>
+          </div>
+          <div class="flex items-center gap-2 w-full sm:w-auto">
+            <input type="tel" id="caseSearchInput" placeholder="রোগীর মোবাইল নম্বর দিন..." class="px-3 py-1.5 border border-slate-300 rounded-xl text-xs w-48 font-mono">
+            <button onclick="searchCaseByPhone()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow transition flex items-center gap-1">
+              <i data-lucide="search" class="w-3.5 h-3.5"></i>
+              <span>কেস খুঁজুন</span>
+            </button>
+            <button onclick="openNewCaseModal()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold transition">
+              + নতুন কেস
+            </button>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-slate-700">
+              <thead class="bg-slate-50 text-slate-600 uppercase font-semibold text-[11px] border-b border-slate-200">
+                <tr>
+                  <th class="px-4 py-3">রোগীর নাম</th>
+                  <th class="px-4 py-3">মোবাইল</th>
+                  <th class="px-4 py-3">মায়াজম (Miasm)</th>
+                  <th class="px-4 py-3">ধাতুগত অবস্থা (Thermal)</th>
+                  <th class="px-4 py-3">খাবার রুচি ও পছন্দ</th>
+                  <th class="px-4 py-3">মানসিক লক্ষণ</th>
+                  <th class="px-4 py-3 text-right">অ্যাকশন</th>
+                </tr>
+              </thead>
+              <tbody id="casesTableBody" class="divide-y divide-slate-100">
+                <tr>
+                  <td colspan="7" class="text-center py-8 text-slate-400">কোনো কেস টেকিং শিট পাওয়া যায়নি</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 4. INVENTORY TAB ================= -->
+      <div id="tabContent-inventory" class="tab-content hidden space-y-6">
+        
+        <!-- Low stock alert box -->
+        <div id="lowStockAlertBox" class="hidden bg-red-50 border border-red-200 rounded-2xl p-4 flex items-start gap-3 text-xs text-red-900">
+          <i data-lucide="alert-triangle" class="w-5 h-5 text-red-600 shrink-0 mt-0.5"></i>
+          <div>
+            <p class="font-bold text-red-800 text-sm">স্টক ঘাটতি সতর্কতা (Low Stock Alert):</p>
+            <p class="mt-0.5 text-red-700 leading-relaxed" id="lowStockAlertText">নিচের ওষুধগুলোর স্টক শেষ হয়ে আসছে, দ্রুত অর্ডার করুন।</p>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center">
+          <div>
+            <h2 class="text-base font-bold text-slate-800">ওষুধ ও ডিলিউশন ইনভেন্টরি ম্যানেজমেন্ট</h2>
+            <p class="text-xs text-slate-500">মাদার টিংচার, ডিলিউশন ও বায়োকেমিক ঔষধের স্টক হিসাব</p>
+          </div>
+          <button onclick="openAddMedicineModal()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow flex items-center gap-1.5 transition">
+            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+            <span>নতুন ওষুধ যুক্ত করুন</span>
+          </button>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-slate-700">
+              <thead class="bg-slate-50 text-slate-600 uppercase font-semibold text-[11px] border-b border-slate-200">
+                <tr>
+                  <th class="px-4 py-3">আইডি</th>
+                  <th class="px-4 py-3">ওষুধের নাম (Remedy)</th>
+                  <th class="px-4 py-3">শক্তি (Potency)</th>
+                  <th class="px-4 py-3">ধরন (Type)</th>
+                  <th class="px-4 py-3">বর্তমান স্টক</th>
+                  <th class="px-4 py-3">স্টক স্ট্যাটাস</th>
+                  <th class="px-4 py-3 text-right">স্টক আপডেট / অ্যাকশন</th>
+                </tr>
+              </thead>
+              <tbody id="inventoryTableBody" class="divide-y divide-slate-100">
+                <tr>
+                  <td colspan="7" class="text-center py-8 text-slate-400">ইনভেন্টরি ডাটা লোড হচ্ছে...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 5. FOLLOW-UPS TAB ================= -->
+      <div id="tabContent-followups" class="tab-content hidden space-y-6">
+        <div class="flex justify-between items-center">
+          <div>
+            <h2 class="text-base font-bold text-slate-800">ফলো-আপ রিমাইন্ডার ও পেশেন্ট কল ট্র্যাকার</h2>
+            <p class="text-xs text-slate-500">যে সকল রোগীর ওষুধ শেষ হতে চলেছে তাদের তালিকা ও WhatsApp রিমাইন্ডার</p>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-slate-700">
+              <thead class="bg-slate-50 text-slate-600 uppercase font-semibold text-[11px] border-b border-slate-200">
+                <tr>
+                  <th class="px-4 py-3">রোগীর নাম</th>
+                  <th class="px-4 py-3">মোবাইল নম্বর</th>
+                  <th class="px-4 py-3">ওষুধের সময়কাল</th>
+                  <th class="px-4 py-3">ফলো-আপ নির্ধারিত তারিখ</th>
+                  <th class="px-4 py-3">স্ট্যাটাস</th>
+                  <th class="px-4 py-3 text-right">স্বয়ংক্রিয় রিমাইন্ডার অ্যাকশন</th>
+                </tr>
+              </thead>
+              <tbody id="followupsTableBody" class="divide-y divide-slate-100">
+                <tr>
+                  <td colspan="6" class="text-center py-8 text-slate-400">কোনো ফলো-আপ রিমাইন্ডার শিডিউল নেই</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- ================= MODAL 1: DIGITAL PRESCRIPTION WRITER ================= -->
+  <div id="prescriptionModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-3xl w-full max-h-[92vh] overflow-y-auto shadow-2xl border border-slate-100 p-6 sm:p-8 space-y-6">
+      
+      <div class="flex justify-between items-center pb-3 border-b border-slate-100">
+        <div class="flex items-center gap-2.5">
+          <span class="text-2xl">℞</span>
+          <div>
+            <h3 class="text-base font-bold text-slate-800">ডিজিটাল হোমিওপ্যাথিক প্রেসক্রিপশন জেনারেটর</h3>
+            <p class="text-[11px] text-slate-500">চিশতিয়া হোমিও ক্লিনিক • ডাঃ মোঃ আলাউদ্দিন</p>
+          </div>
+        </div>
+        <button onclick="closePrescriptionModal()" class="text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="prescriptionForm" class="space-y-4">
+        <input type="hidden" id="rxModalAppointmentId">
+
+        <!-- Patient meta -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-emerald-50/70 p-3.5 rounded-2xl border border-emerald-200 text-xs">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">রোগীর নাম <span class="text-red-500">*</span></label>
+            <input type="text" id="rxModalPatientName" required class="w-full px-3 py-1.5 border border-slate-300 rounded-lg">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">মোবাইল নম্বর <span class="text-red-500">*</span></label>
+            <input type="tel" id="rxModalPhone" required class="w-full px-3 py-1.5 border border-slate-300 rounded-lg font-mono">
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">বয়স</label>
+              <input type="number" id="rxModalAge" class="w-full px-3 py-1.5 border border-slate-300 rounded-lg">
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">লিঙ্গ</label>
+              <select id="rxModalGender" class="w-full px-2 py-1.5 border border-slate-300 rounded-lg">
+                <option value="পুরুষ">পুরুষ</option>
+                <option value="মহিলা">মহিলা</option>
+                <option value="শিশু">শিশু</option>
+              </select>
+            </div>
+          </div>
+          <div class="sm:col-span-3">
+            <label class="block font-semibold text-slate-700 mb-1">রোগ নির্ণয় / প্রধান লক্ষণ (Diagnosis / Symptoms)</label>
+            <input type="text" id="rxModalDiagnosis" placeholder="যেমন: ক্রনিক গ্যাস্ট্রাইটিস ও এসিডিটি..." class="w-full px-3 py-1.5 border border-slate-300 rounded-lg">
+          </div>
+        </div>
+
+        <!-- Prescribed Remedies Section -->
+        <div>
+          <div class="flex justify-between items-center mb-2">
+            <label class="text-xs font-bold text-slate-800 flex items-center gap-1">
+              <span>হোমিওপ্যাথিক ওষুধ ও মাত্রা নির্বাচন (Prescribed Remedies)</span>
+            </label>
+            <button type="button" onclick="addMedicineRow()" class="px-2.5 py-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 rounded-lg text-xs font-bold transition flex items-center gap-1">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>+ ওষুধ যোগ করুন</span>
+            </button>
+          </div>
+
+          <div id="medicinesContainer" class="space-y-2">
+            <!-- Dynamic Medicine Rows inserted here -->
+          </div>
+        </div>
+
+        <!-- Advice & Followup -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">পথ্য ও বিশেষ নির্দেশিকা (Dietary Advice)</label>
+            <textarea id="rxModalAdvice" rows="2" class="w-full px-3 py-2 border border-slate-300 rounded-xl">ওষুধ খাওয়ার আধা ঘণ্টা আগে-পরে কোনো খাবার খাবেন না। কাঁচা পেঁয়াজ, রসুন ও তামাক পরিহার করুন। ওষুধ তীব্র গন্ধ ও রোদ থেকে দূরে রাখুন।</textarea>
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">ফলো-আপ সাক্ষাতের সময় (কত দিন পর আসবেন?)</label>
+            <select id="rxModalFollowupDays" class="w-full px-3 py-2 border border-slate-300 rounded-xl mb-2">
+              <option value="7">৭ দিন পর</option>
+              <option value="15" selected>১৫ দিন পর (স্ট্যান্ডার্ড)</option>
+              <option value="21">২১ দিন পর</option>
+              <option value="30">৩০ দিন পর</option>
+              <option value="0">ফলো-আপ আবশ্যক নয়</option>
+            </select>
+            <p class="text-[11px] text-slate-500">💡 সফটওয়্যার মেয়াদ শেষ হওয়ার ২ দিন আগে স্বয়ংক্রিয়ভাবে ফলো-আপ অ্যালার্ট সেট করবে।</p>
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-slate-100 flex justify-end gap-2">
+          <button type="button" onclick="closePrescriptionModal()" class="px-4 py-2 border border-slate-200 text-slate-600 rounded-xl text-xs font-semibold">
+            বাতিল
+          </button>
+          <button type="submit" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow flex items-center gap-1.5">
+            <i data-lucide="check" class="w-4 h-4"></i>
+            <span>প্রেসক্রিপশন সংরক্ষণ ও ভিউ করুন</span>
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL 2: CONSTITUTIONAL CASE SHEET ================= -->
+  <div id="caseModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[92vh] overflow-y-auto shadow-2xl border border-slate-100 p-6 sm:p-8 space-y-6">
+      
+      <div class="flex justify-between items-center pb-3 border-b border-slate-100">
+        <div>
+          <h3 class="text-base font-bold text-slate-800">হোমিওপ্যাথিক ধাতুগত কেস টেকিং শিট</h3>
+          <p class="text-[11px] text-slate-500">রোগীর ধাতুগত লক্ষণসমূহ স্থায়ীভাবে সংরক্ষণ করুন</p>
+        </div>
+        <button onclick="closeCaseModal()" class="text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="caseForm" class="space-y-4 text-xs">
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">রোগীর নাম <span class="text-red-500">*</span></label>
+            <input type="text" id="casePatientName" required class="w-full px-3 py-2 border border-slate-300 rounded-xl">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">মোবাইল নম্বর <span class="text-red-500">*</span></label>
+            <input type="tel" id="casePhone" required class="w-full px-3 py-2 border border-slate-300 rounded-xl font-mono">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">মায়াজম (Miasmatic Dominance)</label>
+            <select id="caseMiasm" multiple class="w-full px-2 py-1.5 border border-slate-300 rounded-xl h-20">
+              <option value="সোরা (Psora)" selected>সোরা (Psora)</option>
+              <option value="সাইকোসিস (Sycosis)">সাইকোসিস (Sycosis)</option>
+              <option value="সিফিলিস (Syphilis)">সিফিলিস (Syphilis)</option>
+              <option value="টিউবারকুলার (Tubercular)">টিউবারকুলার (Tubercular)</option>
+            </select>
+            <span class="text-[10px] text-slate-400">Ctrl চেপে একাধিক সিলেক্ট করুন</span>
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">ধাতুগত অবস্থা (Thermal State)</label>
+            <select id="caseThermal" class="w-full px-3 py-2 border border-slate-300 rounded-xl mb-2">
+              <option value="গরমকাতর (Hot Patient)">গরমকাতর (Hot Patient)</option>
+              <option value="শীতকাতর (Chilly Patient)">শীতকাতর (Chilly Patient)</option>
+              <option value="উভকাতর (Ambithermal)">উভকাতর (Ambithermal)</option>
+            </select>
+
+            <label class="block font-semibold text-slate-700 mb-1">ক্ষুধা ও তৃষ্ণা (Appetite & Thirst)</label>
+            <input type="text" id="caseThirst" placeholder="যেমন: প্রচুর পানি পিপাসা / অল্প অল্প বারবার পিপাসা..." class="w-full px-3 py-1.5 border border-slate-300 rounded-xl">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">পছন্দের খাবার (Desires)</label>
+            <input type="text" id="caseDesires" placeholder="মিষ্টি, নোনতা, মাংস, টক, গরম খাবার..." class="w-full px-3 py-2 border border-slate-300 rounded-xl">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">অপছন্দের খাবার (Aversions)</label>
+            <input type="text" id="caseAversions" placeholder="দুধ, চর্বি, রুটি, তেলজাতীয় খাদ্য..." class="w-full px-3 py-2 border border-slate-300 rounded-xl">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">মানসিক লক্ষণ (Mind / Emotional State)</label>
+            <textarea id="caseMind" rows="2" placeholder="রাগ, ভয়, উদ্বেগ, একাকীত্ব ভীতি, কান্নাশীল, জেদ..." class="w-full px-3 py-2 border border-slate-300 rounded-xl"></textarea>
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">ঘুম ও স্বপ্ন (Sleep & Dreams)</label>
+            <textarea id="caseSleep" rows="2" placeholder="অনিদ্রা, দুঃস্বপ্ন, চমকে ওঠা, এপাশ-ওপাশ..." class="w-full px-3 py-2 border border-slate-300 rounded-xl"></textarea>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">অতীত রোগ ও পারিবারিক ইতিহাস</label>
+            <input type="text" id="casePastIllness" placeholder="যক্ষ্মা, ক্যান্সার, চর্মরোগ চাপা পড়া..." class="w-full px-3 py-2 border border-slate-300 rounded-xl">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">অন্যান্য বিশেষ নোট</label>
+            <input type="text" id="caseGeneralNotes" placeholder="বিশেষ বৈশিষ্ট্যপূর্ণ শারীরিক লক্ষণ..." class="w-full px-3 py-2 border border-slate-300 rounded-xl">
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-slate-100 flex justify-end gap-2">
+          <button type="button" onclick="closeCaseModal()" class="px-4 py-2 border border-slate-200 text-slate-600 rounded-xl font-semibold">বাতিল</button>
+          <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold shadow">কেস শিট সংরক্ষণ করুন</button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL 3: ADD MEDICINE ================= -->
+  <div id="medicineModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-md w-full shadow-2xl p-6 space-y-4">
+      <div class="flex justify-between items-center border-b pb-2">
+        <h3 class="text-sm font-bold text-slate-800">ইনভেন্টরিতে নতুন ওষুধ যোগ করুন</h3>
+        <button onclick="closeMedicineModal()" class="text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <form id="medicineForm" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">ওষুধের নাম (Homeopathic Remedy) <span class="text-red-500">*</span></label>
+          <input type="text" id="medName" required placeholder="যেমন: Nux Vomica, Thuja..." class="w-full px-3 py-2 border border-slate-300 rounded-xl">
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">শক্তি (Potency)</label>
+            <input type="text" id="medPotency" placeholder="30C, 200C, 1M, Q..." class="w-full px-3 py-2 border border-slate-300 rounded-xl">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">ধরন (Type)</label>
+            <select id="medType" class="w-full px-3 py-2 border border-slate-300 rounded-xl">
+              <option value="Dilution">Dilution</option>
+              <option value="Mother Tincture">Mother Tincture (Q)</option>
+              <option value="Biochemic">Biochemic</option>
+              <option value="Trituration">Trituration</option>
+              <option value="Globules">Globules</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">বর্তমান স্টক সংখ্যা</label>
+            <input type="number" id="medStock" required min="0" placeholder="যেমন: 50" class="w-full px-3 py-2 border border-slate-300 rounded-xl">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">একক (Unit)</label>
+            <input type="text" id="medUnit" placeholder="ml / file / dram" value="ml" class="w-full px-3 py-2 border border-slate-300 rounded-xl">
+          </div>
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">সর্বনিম্ন স্টক সতর্কতা লিমিট (Min Alert)</label>
+          <input type="number" id="medMinAlert" value="15" class="w-full px-3 py-2 border border-slate-300 rounded-xl">
+        </div>
+
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeMedicineModal()" class="px-4 py-2 border border-slate-200 text-slate-600 rounded-xl font-semibold">বাতিল</button>
+          <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold shadow">যোগ করুন</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL 4: SETTINGS & TELEGRAM ================= -->
+  <div id="settingsModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-100 p-6 sm:p-8 space-y-6">
+      
+      <div class="flex justify-between items-center pb-3 border-b border-slate-100">
+        <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+          <i data-lucide="sliders" class="w-5 h-5 text-emerald-600"></i>
+          <span>ক্লিনিক, পেমেন্ট ও টেলিগ্রাম কনফিগারেশন</span>
+        </h3>
+        <button onclick="closeSettingsModal()" class="text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="settingsForm" class="space-y-4 text-xs">
+
+        <!-- Telegram Card -->
+        <div class="bg-sky-50/70 border border-sky-200 rounded-2xl p-4 space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">🤖</span>
+              <h4 class="font-bold text-sky-950 uppercase tracking-wide">টেলিগ্রাম বট নোটিফিকেশন</h4>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="telegramEnabled" name="telegramEnabled" class="sr-only peer" checked>
+              <div class="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-600"></div>
+              <span class="ml-2 font-medium text-slate-700">সক্রিয়</span>
+            </label>
+          </div>
+
+          <div class="space-y-2.5">
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">টেলিগ্রাম বট টোকেন (Bot Token)</label>
+              <input type="text" id="telegramBotToken" name="telegramBotToken" placeholder="BotFather থেকে প্রাপ্ত টোকেন..." class="w-full px-3 py-2 border border-slate-300 rounded-lg font-mono">
+            </div>
+
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">টেলিগ্রাম চ্যাট আইডি (Chat ID)</label>
+              <input type="text" id="telegramChatId" name="telegramChatId" placeholder="@userinfobot থেকে প্রাপ্ত আইডি..." class="w-full px-3 py-2 border border-slate-300 rounded-lg font-mono">
+            </div>
+
+            <div class="flex items-center justify-between pt-1">
+              <p class="text-[11px] text-slate-500">
+                টোকেন ও আইডি বসানোর পর পরীক্ষা করুন:
+              </p>
+              <button type="button" onclick="testTelegramAlert()" id="testTelegramBtn" class="px-3 py-1.5 bg-sky-600 hover:bg-sky-700 text-white rounded-lg font-bold shadow flex items-center gap-1">
+                <i data-lucide="send" class="w-3 h-3"></i>
+                <span>টেস্ট মেসেজ পাঠান</span>
+              </button>
+            </div>
+            <div id="telegramTestFeedback" class="text-xs mt-1"></div>
+          </div>
+        </div>
+
+        <!-- Payment Settings Card -->
+        <div class="bg-emerald-50/60 border border-emerald-200 rounded-2xl p-4 space-y-3">
+          <div class="flex items-center gap-2">
+            <span class="text-lg">💳</span>
+            <h4 class="font-bold text-emerald-950 uppercase tracking-wide">বিকাশ ও নগদ পেমেন্ট নম্বর সেটিংস</h4>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">বিকাশ নম্বর (Personal/Merchant)</label>
+              <input type="text" id="settingBkash" name="bkashNumber" class="w-full px-3 py-2 border border-slate-300 rounded-lg font-mono">
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">নগদ নম্বর (Personal/Merchant)</label>
+              <input type="text" id="settingNagad" name="nagadNumber" class="w-full px-3 py-2 border border-slate-300 rounded-lg font-mono">
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">নতুন রোগীর ভিজিট ফি (টাকা)</label>
+              <input type="text" id="settingFeeNew" name="consultationFeeNew" class="w-full px-3 py-2 border border-slate-300 rounded-lg">
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">পুরাতন / ফলোআপ রোগীর ফি (টাকা)</label>
+              <input type="text" id="settingFeeOld" name="consultationFeeOld" class="w-full px-3 py-2 border border-slate-300 rounded-lg">
+            </div>
+          </div>
+        </div>
+
+        <!-- Clinic Details -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">ক্লিনিকের নাম</label>
+            <input type="text" id="settingClinicName" name="clinicName" class="w-full px-3 py-2 border border-slate-300 rounded-lg">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">ডাক্তার সাহেবের নাম</label>
+            <input type="text" id="settingDoctorName" name="doctorName" class="w-full px-3 py-2 border border-slate-300 rounded-lg">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">ডিগ্রী ও পদবি</label>
+            <input type="text" id="settingDoctorDegree" name="doctorDegree" class="w-full px-3 py-2 border border-slate-300 rounded-lg">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">মোবাইল নম্বর (প্রধান)</label>
+            <input type="text" id="settingPhone" name="phone" class="w-full px-3 py-2 border border-slate-300 rounded-lg">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">মোবাইল নম্বর (দ্বিতীয়)</label>
+            <input type="text" id="settingPhoneSecondary" name="phoneSecondary" class="w-full px-3 py-2 border border-slate-300 rounded-lg">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">পরামর্শের সময়সূচী</label>
+            <input type="text" id="settingVisitingHours" name="visitingHours" class="w-full px-3 py-2 border border-slate-300 rounded-lg">
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block font-semibold text-slate-700 mb-1">এডমিন পাসওয়ার্ড পরিবর্তন (ঐচ্ছিক)</label>
+            <input type="text" id="settingAdminPassword" name="adminPassword" placeholder="নতুন পাসওয়ার্ড" class="w-full px-3 py-2 border border-slate-300 rounded-lg">
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-slate-100 flex justify-end gap-2">
+          <button type="button" onclick="closeSettingsModal()" class="px-4 py-2 border border-slate-200 text-slate-600 rounded-xl font-semibold">বাতিল</button>
+          <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold shadow">সেটিংস সংরক্ষণ করুন</button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <script src="/admin.js"></script>
+</body>
+</html>

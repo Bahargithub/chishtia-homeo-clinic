@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ডিজিটাল প্রেসক্রিপশন - চিশতিয়া হোমিও ক্লিনিক</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body { font-family: 'Hind Siliguri', sans-serif; }
+    .rx-font { font-family: 'Playfair Display', serif; }
+    @media print {
+      .no-print { display: none !important; }
+      body { background-color: #fff; padding: 0; }
+      .rx-sheet { box-shadow: none !important; border: 1.5px solid #10b981 !important; margin: 0; }
+    }
+  </style>
+</head>
+<body class="bg-slate-100 min-h-screen py-6 px-4 flex flex-col items-center justify-start text-slate-800">
+
+  <!-- Action Bar (Hidden on print) -->
+  <div class="max-w-3xl w-full mb-4 flex justify-between items-center no-print bg-white p-3.5 rounded-2xl shadow-sm border border-slate-200">
+    <a href="/admin" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-emerald-700">
+      <i data-lucide="arrow-left" class="w-4 h-4"></i>
+      <span>ড্যাশবোর্ডে ফিরুন</span>
+    </a>
+    <div class="flex items-center gap-2">
+      <button id="sendWhatsAppBtn" class="px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 rounded-xl text-xs font-bold flex items-center gap-1.5 transition">
+        <i data-lucide="message-circle" class="w-4 h-4 text-emerald-600"></i>
+        <span>WhatsApp-এ প্রেসক্রিপশন পাঠান</span>
+      </button>
+      <button onclick="window.print()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow flex items-center gap-1.5 transition">
+        <i data-lucide="printer" class="w-4 h-4"></i>
+        <span>প্রিন্ট / PDF সেভ করুন</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Prescription Paper Sheet -->
+  <div class="rx-sheet max-w-3xl w-full bg-white rounded-2xl shadow-xl border-2 border-emerald-600/30 overflow-hidden flex flex-col justify-between p-8 sm:p-10 space-y-6 min-h-[950px]">
+    
+    <!-- Top Pad Header -->
+    <div class="border-b-2 border-emerald-700 pb-5">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        
+        <!-- Clinic & Doctor Branding -->
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-2xl">🌿</span>
+            <h1 class="text-2xl sm:text-3xl font-black text-emerald-950 tracking-tight" id="rxClinicName">চিশতিয়া হোমিও ক্লিনিক</h1>
+          </div>
+          <p class="text-xs text-emerald-700 font-semibold mt-0.5" id="rxClinicSubtitle">সুস্থ দেহ, সুন্দর জীবন • প্রকৃতির ছোঁয়ায় সুস্থতার প্রত্যাশা</p>
+          <div class="mt-2.5">
+            <h2 class="text-lg font-bold text-slate-900" id="rxDoctorName">ডাঃ মোঃ আলাউদ্দিন</h2>
+            <p class="text-xs font-medium text-emerald-800" id="rxDoctorDegree">বি.এইচ.এম.এস, ডি.এইচ.এম.এস. (হোমিওপ্যাথিক চিকিৎসক)</p>
+          </div>
+        </div>
+
+        <!-- Contact & Chamber Hours -->
+        <div class="text-left sm:text-right text-xs text-slate-600 space-y-1 sm:self-center">
+          <div class="inline-block bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-200 text-emerald-900 font-semibold text-[11px]">
+            🕒 প্রতিদিন বিকাল ৪:০০ টা - রাত ১০:০০ টা
+          </div>
+          <p><span class="text-slate-500">চেম্বার:</span> <span id="rxAddress" class="font-medium">চিশতিয়া হোমিও ক্লিনিক</span></p>
+          <p><span class="text-slate-500">মোবাইল:</span> <span class="font-bold text-slate-800 font-mono" id="rxPhone">01719-158085, 01619-158085</span></p>
+          <p class="text-[11px] font-mono text-emerald-800" id="rxPrescriptionId">Rx ID: #---</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Patient Meta Strip -->
+    <div class="bg-emerald-50/70 border border-emerald-200/80 rounded-xl p-3.5 text-xs text-slate-800 grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div>
+        <span class="text-slate-500 block text-[11px]">রোগীর নাম:</span>
+        <span id="rxPatientName" class="font-bold text-sm text-emerald-950">--</span>
+      </div>
+      <div>
+        <span class="text-slate-500 block text-[11px]">বয়স ও লিঙ্গ:</span>
+        <span id="rxAgeGender" class="font-medium">--</span>
+      </div>
+      <div>
+        <span class="text-slate-500 block text-[11px]">মোবাইল:</span>
+        <span id="rxPatientPhone" class="font-bold font-mono">--</span>
+      </div>
+      <div>
+        <span class="text-slate-500 block text-[11px]">তারিখ:</span>
+        <span id="rxDate" class="font-bold">--</span>
+      </div>
+      <div class="col-span-2 sm:col-span-4 pt-1 border-t border-emerald-200/60 flex flex-wrap justify-between gap-2 text-[11px]">
+        <div>
+          <span class="text-slate-500 font-semibold">রোগ নির্ণয় / সমস্যা:</span>
+          <span id="rxDiagnosis" class="font-bold text-emerald-900">--</span>
+        </div>
+        <div id="rxMiasmWrap" class="hidden">
+          <span class="text-slate-500 font-semibold">ধাতুগত বৈশিষ্ট্য:</span>
+          <span id="rxMiasm" class="font-medium text-emerald-800">--</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rx Body -->
+    <div class="flex-1 space-y-4">
+      
+      <!-- Rx Symbol -->
+      <div class="flex items-center gap-3">
+        <span class="rx-font text-3xl font-bold text-emerald-800 italic">℞</span>
+        <div class="h-[1px] flex-1 bg-slate-200"></div>
+      </div>
+
+      <!-- Prescribed Medicines Table -->
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs border border-slate-200 rounded-xl overflow-hidden">
+          <thead class="bg-emerald-900 text-white font-semibold text-[11px]">
+            <tr>
+              <th class="py-2.5 px-3 w-10 text-center">নং</th>
+              <th class="py-2.5 px-3">ওষুধের নাম (Homeopathic Remedy)</th>
+              <th class="py-2.5 px-3 w-28">শক্তি (Potency)</th>
+              <th class="py-2.5 px-3">মাত্রা ও সেবনবিধি (Dosage)</th>
+              <th class="py-2.5 px-3 w-20 text-center">স্থায়িত্ব</th>
+            </tr>
+          </thead>
+          <tbody id="rxMedicinesTable" class="divide-y divide-slate-100">
+            <tr>
+              <td colspan="5" class="py-6 text-center text-slate-400">কোনো ওষুধ পাওয়া যায়নি</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Special Advice / Guidelines -->
+      <div class="bg-amber-50/70 border border-amber-200/70 rounded-xl p-3.5 space-y-1.5 text-xs text-amber-950">
+        <p class="font-bold text-amber-900 flex items-center gap-1.5">
+          <i data-lucide="alert-circle" class="w-3.5 h-3.5 text-amber-700"></i>
+          হোমিওপ্যাথিক পথ্য ও পরামর্শ:
+        </p>
+        <p id="rxAdvice" class="leading-relaxed whitespace-pre-wrap">ওষুধ খাওয়ার আধা ঘণ্টা আগে-পরে কোনো খাবার খাবেন না। কাঁচা পেঁয়াজ, কাঁচা রসুন, তামাক বা তীব্র গন্ধযুক্ত বস্তু বর্জন করুন। ওষুধ শীতল ও শুষ্ক স্থানে সংরক্ষণ করুন।</p>
+      </div>
+
+    </div>
+
+    <!-- Footer of Rx Pad -->
+    <div class="border-t-2 border-slate-200 pt-6 space-y-4">
+      <div class="flex flex-col sm:flex-row justify-between items-end gap-6">
+        
+        <!-- Next Visit -->
+        <div class="text-xs space-y-1">
+          <div class="inline-flex items-center gap-1.5 font-bold text-emerald-900 bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-200">
+            <i data-lucide="calendar" class="w-3.5 h-3.5 text-emerald-700"></i>
+            <span>পরবর্তী সাক্ষাতের সম্ভাব্য তারিখ: <span id="rxNextDate">--</span></span>
+          </div>
+          <p class="text-[11px] text-slate-500">ওষুধ শেষ হওয়ার ২ দিন আগে পরবর্তী সিরিয়াল নিশ্চিত করুন।</p>
+        </div>
+
+        <!-- Doctor Signature Block -->
+        <div class="text-center sm:text-right min-w-[200px]">
+          <div class="w-36 h-10 border-b border-slate-400 mx-auto sm:ml-auto mb-1"></div>
+          <p class="font-bold text-xs text-slate-800">ডাঃ মোঃ আলাউদ্দিন</p>
+          <p class="text-[10px] text-slate-500 font-medium">হোমিওপ্যাথিক চিকিৎসক</p>
+          <p class="text-[10px] text-slate-400">চিশতিয়া হোমিও ক্লিনিক</p>
+        </div>
+
+      </div>
+
+      <div class="text-center text-[10px] text-slate-400 pt-2 border-t border-slate-100">
+        সফটওয়্যার জেনারেটেড ডিজিটাল হোমিওপ্যাথিক প্রেসক্রিপশন • সুস্থতার বিশ্বস্ত ঠিকানা
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    let prescriptionData = null;
+
+    async function loadPrescription() {
+      const parts = window.location.pathname.split('/');
+      const id = parts[parts.length - 1];
+      if (!id) return;
+
+      try {
+        const res = await fetch(`/api/prescription/${id}`);
+        const data = await res.json();
+
+        if (data.success && data.prescription) {
+          const rx = data.prescription;
+          const clinic = data.clinic;
+          prescriptionData = rx;
+
+          // Clinic details
+          if (clinic.clinicName) document.getElementById('rxClinicName').textContent = clinic.clinicName;
+          if (clinic.clinicSubtitle) document.getElementById('rxClinicSubtitle').textContent = clinic.clinicSubtitle;
+          if (clinic.doctorName) document.getElementById('rxDoctorName').textContent = clinic.doctorName;
+          if (clinic.doctorDegree) document.getElementById('rxDoctorDegree').textContent = clinic.doctorDegree;
+          if (clinic.address) document.getElementById('rxAddress').textContent = clinic.address;
+          if (clinic.phone) document.getElementById('rxPhone').textContent = `${clinic.phone}, ${clinic.phoneSecondary || ''}`;
+
+          // Rx meta
+          document.getElementById('rxPrescriptionId').textContent = `Rx ID: #${rx.id}`;
+          document.getElementById('rxPatientName').textContent = rx.patientName;
+          document.getElementById('rxAgeGender').textContent = `${rx.age || '--'} বছর | ${rx.gender || '--'}`;
+          document.getElementById('rxPatientPhone').textContent = rx.phone;
+          document.getElementById('rxDate').textContent = new Date(rx.createdAt).toLocaleDateString('bn-BD');
+          document.getElementById('rxDiagnosis').textContent = rx.diagnosis || rx.chiefComplaints || 'সাধারণ পরীক্ষা ও পরামর্শ';
+          
+          if (rx.miasm) {
+            document.getElementById('rxMiasmWrap').classList.remove('hidden');
+            document.getElementById('rxMiasm').textContent = `${rx.thermal || ''} • ${Array.isArray(rx.miasm) ? rx.miasm.join(', ') : rx.miasm}`;
+          }
+
+          if (rx.advice) {
+            document.getElementById('rxAdvice').textContent = rx.advice;
+          }
+
+          // Next date
+          if (rx.followupDays && parseInt(rx.followupDays) > 0) {
+            const nextDate = new Date();
+            nextDate.setDate(nextDate.getDate() + parseInt(rx.followupDays));
+            document.getElementById('rxNextDate').textContent = `${nextDate.toLocaleDateString('bn-BD')} (${rx.followupDays} দিন পর)`;
+          } else {
+            document.getElementById('rxNextDate').textContent = 'প্রয়োজন অনুসারে যোগাযোগ করুন';
+          }
+
+          // Render Medicines
+          const tbody = document.getElementById('rxMedicinesTable');
+          if (rx.medicines && rx.medicines.length > 0) {
+            tbody.innerHTML = rx.medicines.map((m, idx) => `
+              <tr class="hover:bg-slate-50">
+                <td class="py-2.5 px-3 text-center font-bold text-slate-500">${idx + 1}</td>
+                <td class="py-2.5 px-3 font-bold text-emerald-950">${m.name}</td>
+                <td class="py-2.5 px-3 font-semibold text-emerald-800">${m.potency || '30C'}</td>
+                <td class="py-2.5 px-3 text-slate-800">${m.dosage || '৪ ফোঁটা দিনে ২ বার খাওয়ার আগে'}</td>
+                <td class="py-2.5 px-3 text-center text-slate-600">${m.days ? `${m.days} দিন` : '--'}</td>
+              </tr>
+            `).join('');
+          } else {
+            tbody.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-slate-400">কোনো ওষুধ প্রেসক্রাইব করা হয়নি</td></tr>`;
+          }
+
+          // WhatsApp Share
+          document.getElementById('sendWhatsAppBtn').onclick = () => {
+            const msg = `আসসালামু আলাইকুম ${rx.patientName},\nচিশতিয়া হোমিও ক্লিনিক (ডাঃ মোঃ আলাউদ্দিন) থেকে আপনার ডিজিটাল প্রেসক্রিপশন দেখতে নিচের লিংকে ক্লিক করুন:\n${window.location.href}\nসুস্থ থাকুন, ধন্যবাদ।`;
+            const cleanPhone = rx.phone.replace(/[^0-9]/g, '');
+            window.open(`https://wa.me/88${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+          };
+        } else {
+          alert('প্রেসক্রিপশন পাওয়া যায়নি!');
+        }
+      } catch (err) {
+        console.error(err);
+      }
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    document.addEventListener('DOMContentLoaded', loadPrescription);
+  </script>
+</body>
+</html>

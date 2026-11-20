@@ -1,0 +1,27 @@
+{
+  "name": "chishtia-homeo-clinic-appointment",
+  "version": "1.0.0",
+  "description": "Online Appointment & Clinic Management System for Chishtia Homeo Clinic",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "homeopathy",
+    "clinic",
+    "appointment",
+    "telegram-bot"
+  ],
+  "author": "Dr. Md. Alauddin",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.10",
+    "express": "^5.3.0",
+    "multer": "^2.5.0"
+  }
+}

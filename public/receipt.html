@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>অ্যাপয়েন্টমেন্ট টোকেন স্লিপ</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body { font-family: 'Hind Siliguri', sans-serif; }
+    @media print {
+      .no-print { display: none !important; }
+      body { background-color: #fff; }
+      .print-border { border: 1.5px solid #000 !important; }
+    }
+  </style>
+</head>
+<body class="bg-slate-100 min-h-screen py-8 px-4 flex flex-col items-center justify-center text-slate-800">
+
+  <!-- Printable Slip Container -->
+  <div class="max-w-md w-full bg-white rounded-2xl shadow-xl border border-slate-200 p-6 sm:p-8 space-y-5 print-border">
+    
+    <!-- Clinic Header -->
+    <div class="text-center pb-4 border-b-2 border-dashed border-slate-300">
+      <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-emerald-100 text-emerald-700 text-2xl mb-1">
+        🌿
+      </div>
+      <h1 id="slipClinicName" class="text-xl font-bold text-slate-900">চিশতিয়া হোমিও ক্লিনিক</h1>
+      <p id="slipClinicSubtitle" class="text-xs text-slate-500 font-medium">সুস্থ দেহ, সুন্দর জীবন • প্রকৃতির ছোঁয়ায় সুস্থতার প্রত্যাশা</p>
+      <div class="mt-2 text-xs text-slate-600 space-y-0.5">
+        <p><b id="slipDoctorName">ডাঃ মোঃ আলাউদ্দিন</b> <span id="slipDoctorDegree" class="text-[11px] text-slate-500">(বি.এইচ.এম.এস, ডি.এইচ.এম.এস.)</span></p>
+        <p id="slipAddress" class="text-[11px]">চিশতিয়া হোমিও ক্লিনিক</p>
+        <p class="text-[11px]">পরামর্শের সময়: <span class="font-bold text-emerald-700">বিকাল ৪:০০ টা - রাত ১০:০০ টা</span></p>
+        <p class="text-[11px]">হেল্পলাইন: <span id="slipPhone" class="font-bold">01719-158085, 01619-158085</span></p>
+      </div>
+    </div>
+
+    <!-- Serial Token Banner -->
+    <div class="bg-emerald-50 border-2 border-emerald-500 rounded-xl p-3 text-center">
+      <p class="text-xs text-emerald-800 font-semibold uppercase tracking-wider">অ্যাপয়েন্টমেন্ট সিরিয়াল টোকেন</p>
+      <h2 id="slipSerialCode" class="text-2xl font-black text-emerald-900 tracking-tight my-1">HC-XXXXXXXX-XXX</h2>
+      <p class="text-xs text-emerald-700 font-medium">আজকের সিরিয়াল নং: <span id="slipDaySerial" class="font-bold text-base">১</span></p>
+    </div>
+
+    <!-- Patient & Schedule Information -->
+    <div class="space-y-2 text-xs border-b pb-4 border-slate-200">
+      <div class="flex justify-between py-1 border-b border-slate-100">
+        <span class="text-slate-500">রোগীর নাম:</span>
+        <span id="slipPatientName" class="font-bold text-slate-800 text-sm">--</span>
+      </div>
+      <div class="flex justify-between py-1 border-b border-slate-100">
+        <span class="text-slate-500">মোবাইল নম্বর:</span>
+        <span id="slipPatientPhone" class="font-bold font-mono text-slate-800">--</span>
+      </div>
+      <div class="flex justify-between py-1 border-b border-slate-100">
+        <span class="text-slate-500">বয়স ও লিঙ্গ:</span>
+        <span id="slipPatientAgeGender" class="font-medium text-slate-800">--</span>
+      </div>
+      <div class="flex justify-between py-1 border-b border-slate-100">
+        <span class="text-slate-500">রোগীর ধরন:</span>
+        <span id="slipPatientType" class="font-semibold text-emerald-700">--</span>
+      </div>
+      <div class="flex justify-between py-1 border-b border-slate-100 bg-amber-50/60 px-2 rounded">
+        <span class="text-amber-900 font-semibold">তারিখ:</span>
+        <span id="slipDate" class="font-bold text-amber-950">--</span>
+      </div>
+      <div class="flex justify-between py-1 bg-emerald-50/60 px-2 rounded">
+        <span class="text-emerald-900 font-semibold">নির্ধারিত সময় স্লট:</span>
+        <span id="slipSlot" class="font-bold text-emerald-950">--</span>
+      </div>
+      <div class="flex justify-between py-1 px-2 border-t border-slate-100 text-[11px]" id="slipPaymentRow">
+        <span class="text-slate-500">পেমেন্ট মেথড:</span>
+        <span id="slipPaymentInfo" class="font-bold text-slate-700">ক্লিনিকে ক্যাশ (Cash)</span>
+      </div>
+    </div>
+
+    <!-- Instructions for Homeopathy Patient -->
+    <div class="bg-slate-50 rounded-xl p-3 text-[11px] text-slate-600 space-y-1">
+      <p class="font-bold text-slate-700">রোগীর প্রতি বিশেষ পরামর্শ:</p>
+      <ul class="list-disc pl-4 space-y-0.5">
+        <li>দয়া করে উল্লেখিত সময়ের অন্তত ১০ মিনিট পূর্বে চেম্বারে উপস্থিত থাকুন।</li>
+        <li>ডাক্তারকে দেখানোর পূর্বে কাঁচা পেঁয়াজ বা তীব্র গন্ধযুক্ত খাবার খাবেন না।</li>
+        <li>পূর্বের কোনো প্রেসক্রিপশন বা টেস্ট রিপোর্ট থাকলে সাথে নিয়ে আসুন।</li>
+      </ul>
+    </div>
+
+    <!-- Footer Note -->
+    <div class="text-center text-[10px] text-slate-400">
+      <p>সফটওয়্যার জেনারেটেড ডিজিটাল টোকেন স্লিপ</p>
+      <p id="slipBookingTime"></p>
+    </div>
+
+    <!-- Print / Back Buttons (Hidden when printing) -->
+    <div class="no-print pt-2 space-y-2">
+      <button id="whatsappSlipBtn" class="w-full py-2.5 px-4 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold text-xs transition flex items-center justify-center gap-1.5">
+        <i data-lucide="message-circle" class="w-4 h-4 text-emerald-600"></i>
+        <span>WhatsApp-এ সিরিয়াল কনফার্মেশন পাঠান</span>
+      </button>
+      <div class="flex gap-2">
+        <button onclick="window.print()" class="flex-1 py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow transition flex items-center justify-center gap-1.5">
+          <i data-lucide="printer" class="w-4 h-4"></i>
+          <span>প্রিন্ট / PDF সংরক্ষণ করুন</span>
+        </button>
+        <a href="/" class="py-2.5 px-4 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold text-xs transition flex items-center justify-center">
+          হোম পেজ
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    async function loadReceipt() {
+      const parts = window.location.pathname.split('/');
+      const id = parts[parts.length - 1];
+
+      if (!id) return;
+
+      try {
+        const res = await fetch(`/api/appointment/${id}`);
+        const data = await res.json();
+
+        if (data.success) {
+          const app = data.appointment;
+          const clinic = data.clinic;
+
+          // Clinic Info
+          if (clinic.clinicName) document.getElementById('slipClinicName').textContent = clinic.clinicName;
+          if (clinic.clinicSubtitle) document.getElementById('slipClinicSubtitle').textContent = clinic.clinicSubtitle;
+          if (clinic.doctorName) document.getElementById('slipDoctorName').textContent = clinic.doctorName;
+          if (clinic.doctorDegree) document.getElementById('slipDoctorDegree').textContent = clinic.doctorDegree;
+          if (clinic.address) document.getElementById('slipAddress').textContent = clinic.address;
+          if (clinic.phone) document.getElementById('slipPhone').textContent = clinic.phone;
+
+          // Appointment Info
+          document.getElementById('slipSerialCode').textContent = app.id;
+          document.getElementById('slipDaySerial').textContent = app.serialNumber;
+          document.getElementById('slipPatientName').textContent = app.patientName;
+          document.getElementById('slipPatientPhone').textContent = app.phone;
+          document.getElementById('slipPatientAgeGender').textContent = `${app.age} বছর | ${app.gender}`;
+          document.getElementById('slipPatientType').textContent = app.patientType || 'নতুন রোগী';
+          document.getElementById('slipDate').textContent = app.appointmentDate;
+          document.getElementById('slipSlot').textContent = app.timeSlot;
+          document.getElementById('slipBookingTime').textContent = `বুকিং তারিখ: ${new Date(app.createdAt).toLocaleString('bn-BD')}`;
+
+          if (app.paymentMethod) {
+            let payStr = app.paymentMethod;
+            if (app.paymentTrxId) payStr += ` (TrxID: ${app.paymentTrxId})`;
+            if (app.paymentStatus) payStr += ` [${app.paymentStatus}]`;
+            document.getElementById('slipPaymentInfo').textContent = payStr;
+          }
+
+          // WhatsApp Button
+          document.getElementById('whatsappSlipBtn').onclick = () => {
+            const clinicName = clinic.clinicName || 'চিশতিয়া হোমিও ক্লিনিক';
+            const msg = `আসসালামু আলাইকুম ${app.patientName},\n${clinicName} (ডাঃ মোঃ আলাউদ্দিন) থেকে আপনার অ্যাপয়েন্টমেন্ট নিশ্চিত হয়েছে।\nসিরিয়াল নং: #${app.id}\nতারিখ: ${app.appointmentDate}\nসময়: ${app.timeSlot}\nটোকেন স্লিপ লিংক: ${window.location.href}\nনির্ধারিত সময়ের ১০ মিনিট আগে উপস্থিত থাকার অনুরোধ রইল। ধন্যবাদ।`;
+            const cleanPhone = app.phone.replace(/[^0-9]/g, '');
+            window.open(`https://wa.me/88${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+          };
+        } else {
+          alert('টোকেন স্লিপ পাওয়া যায়নি!');
+        }
+      } catch (err) {
+        console.error(err);
+      }
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    document.addEventListener('DOMContentLoaded', loadReceipt);
+  </script>
+</body>
+</html>
