@@ -25,24 +25,26 @@ async function loadClinicInfo() {
 // Update UI with dynamic Clinic details
 function updateClinicUI(info) {
   if (info.clinicName) {
-    document.getElementById('headerClinicName').textContent = info.clinicName;
-    document.getElementById('footerClinicName').textContent = info.clinicName;
+    const headerEl = document.getElementById('headerClinicName');
+    const footerEl = document.getElementById('footerClinicName');
+    if (headerEl) headerEl.textContent = info.clinicName;
+    if (footerEl) footerEl.textContent = info.clinicName;
     document.title = `${info.clinicName} - অনলাইন সিরিয়াল বুকিং`;
   }
-  if (info.doctorName) {
+  if (info.doctorName && document.getElementById('headerDoctorName')) {
     document.getElementById('headerDoctorName').textContent = `${info.doctorName} | ${info.doctorDegree || ''}`;
   }
-  if (info.visitingHours) {
+  if (info.visitingHours && document.getElementById('infoVisitingHours')) {
     document.getElementById('infoVisitingHours').textContent = info.visitingHours;
   }
-  if (info.address) {
+  if (info.address && document.getElementById('infoAddress')) {
     document.getElementById('infoAddress').textContent = info.address;
   }
-  if (info.phone) {
+  if (info.phone && document.getElementById('callDoctorBtn') && document.getElementById('headerPhoneText')) {
     document.getElementById('callDoctorBtn').href = `tel:${info.phone}`;
     document.getElementById('headerPhoneText').textContent = info.phone;
   }
-  if (info.phoneSecondary && document.getElementById('secondaryPhoneBtn')) {
+  if (info.phoneSecondary && document.getElementById('secondaryPhoneBtn') && document.getElementById('secondaryPhoneText')) {
     document.getElementById('secondaryPhoneBtn').href = `tel:${info.phoneSecondary}`;
     document.getElementById('secondaryPhoneText').textContent = info.phoneSecondary;
   }
@@ -252,6 +254,44 @@ function showSuccessModal(appointment) {
 function closeSuccessModal() {
   document.getElementById('successModal').classList.add('hidden');
 }
+
+// Doctor Lightbox Popup Functions
+function openDoctorLightbox() {
+  const modal = document.getElementById('doctorLightboxModal');
+  const content = document.getElementById('doctorLightboxContent');
+  if (modal) {
+    modal.classList.remove('hidden');
+    setTimeout(() => {
+      if (content) {
+        content.classList.remove('scale-95');
+        content.classList.add('scale-100');
+      }
+    }, 10);
+    renderIcons();
+  }
+}
+
+function closeDoctorLightbox() {
+  const modal = document.getElementById('doctorLightboxModal');
+  const content = document.getElementById('doctorLightboxContent');
+  if (content) {
+    content.classList.remove('scale-100');
+    content.classList.add('scale-95');
+  }
+  setTimeout(() => {
+    if (modal) {
+      modal.classList.add('hidden');
+    }
+  }, 150);
+}
+
+// Global Escape Key Listener
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeDoctorLightbox();
+    closeSuccessModal();
+  }
+});
 
 // On Page Load
 document.addEventListener('DOMContentLoaded', () => {

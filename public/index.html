@@ -44,6 +44,24 @@
     .badge-btn:hover {
       transform: translateY(-1px);
     }
+    /* Smooth Doctor Image Hover Zoom Effect */
+    .doctor-hover-container {
+      position: relative;
+    }
+    .doctor-hover-preview {
+      position: absolute;
+      opacity: 0;
+      visibility: hidden;
+      transform: scale(0.92) translateY(6px);
+      transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.25s;
+      z-index: 999;
+      pointer-events: none;
+    }
+    .doctor-hover-container:hover .doctor-hover-preview {
+      opacity: 1;
+      visibility: visible;
+      transform: scale(1) translateY(0);
+    }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between">
@@ -52,7 +70,16 @@
   <header class="bg-gradient-to-r from-emerald-800 via-teal-700 to-emerald-900 text-white shadow-lg sticky top-0 z-40">
     <div class="max-w-6xl mx-auto px-4 py-3.5 sm:px-6 flex flex-col sm:flex-row justify-between items-center gap-3">
       <div class="flex items-center gap-3 text-center sm:text-left">
-        <img src="/images/doctor.jpg?v=2" alt="ডাঃ মোঃ আলাউদ্দিন" class="w-12 h-12 rounded-full border-2 border-emerald-300 object-cover shadow-md shrink-0">
+        <div class="doctor-hover-container cursor-pointer" onclick="openDoctorLightbox()" title="মাউস রাখুন বা ক্লিক করে বড় ছবি দেখুন">
+          <img src="/images/doctor.jpg?v=2" alt="ডাঃ মোঃ আলাউদ্দিন" class="w-12 h-12 rounded-full border-2 border-emerald-300 object-cover shadow-md shrink-0 transition-transform duration-300 hover:scale-110">
+          <!-- Mini Hover Tooltip Preview -->
+          <div class="doctor-hover-preview left-0 top-full mt-2 w-56 bg-slate-900/95 backdrop-blur-md p-2.5 rounded-2xl shadow-2xl border-2 border-emerald-400 text-center">
+            <img src="/images/doctor.jpg?v=2" alt="ডাঃ মোঃ আলাউদ্দিন" class="w-full h-52 object-cover rounded-xl mb-1.5 shadow">
+            <p class="font-bold text-xs text-white">ডাঃ মোঃ আলাউদ্দিন</p>
+            <p class="text-[10px] text-emerald-300">বি.এইচ.এম.এস, ডি.এইচ.এম.এস.</p>
+            <p class="text-[9px] text-slate-300">চিশতিয়া হোমিও ক্লিনিক</p>
+          </div>
+        </div>
         <div>
           <div class="flex items-center justify-center sm:justify-start gap-1.5">
             <span class="text-base text-emerald-300">🌿</span>
@@ -102,21 +129,51 @@
   <main class="max-w-5xl mx-auto px-4 py-8 sm:px-6 w-full flex-1">
     
     <!-- Hero & Clinic Showcase Card -->
-    <div class="bg-gradient-to-br from-emerald-900 via-teal-900 to-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-xl mb-8 relative overflow-hidden">
-      <!-- Background glow -->
-      <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="bg-gradient-to-br from-emerald-900 via-teal-900 to-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-xl mb-8 relative">
+      <!-- Background glow (isolated overflow-hidden) -->
+      <div class="absolute inset-0 overflow-hidden rounded-3xl pointer-events-none">
+        <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl"></div>
+      </div>
 
       <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center relative z-10">
         
         <!-- Left: Doctor & Clinic Visual -->
         <div class="md:col-span-5 flex flex-col items-center sm:items-start text-center sm:text-left space-y-3">
           <div class="flex items-center gap-3">
-            <div class="relative">
-              <img src="/images/doctor.jpg?v=2" alt="ডাঃ মোঃ আলাউদ্দিন" class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl object-cover border-2 border-emerald-400/60 shadow-lg">
-              <span class="absolute -bottom-2 -right-2 bg-emerald-500 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-full shadow">
-                অনলাইন
-              </span>
+            
+            <!-- Doctor Avatar with Hover Zoom & Popover -->
+            <div class="doctor-hover-container cursor-pointer" onclick="openDoctorLightbox()" title="মাউস রাখুন বা ক্লিক করে বড় ছবি দেখুন">
+              <div class="relative group">
+                <img src="/images/doctor.jpg?v=2" alt="ডাঃ মোঃ আলাউদ্দিন" class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl object-cover border-2 border-emerald-400/80 shadow-lg transition-all duration-300 hover:scale-105 hover:border-emerald-300 hover:shadow-2xl">
+                <span class="absolute -bottom-2 -right-2 bg-emerald-500 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-full shadow z-10">
+                  অনলাইন
+                </span>
+                <div class="absolute inset-0 bg-slate-950/25 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                  <span class="text-[10px] font-bold text-white bg-slate-900/90 px-2 py-0.5 rounded-full shadow flex items-center gap-1 border border-emerald-400/50">
+                    <i data-lucide="zoom-in" class="w-3 h-3 text-emerald-400"></i> বড় দেখুন
+                  </span>
+                </div>
+              </div>
+
+              <!-- Enlarge on Hover Card (Shows large when mouse cursor hovers) -->
+              <div class="doctor-hover-preview left-0 sm:left-full top-full sm:top-0 sm:ml-4 mt-2 sm:mt-0 w-72 sm:w-84 bg-slate-900/98 backdrop-blur-md p-3.5 rounded-3xl shadow-2xl border-2 border-emerald-400">
+                <div class="overflow-hidden rounded-2xl border border-emerald-500/40 bg-slate-950">
+                  <img src="/images/doctor.jpg?v=2" alt="ডাঃ মোঃ আলাউদ্দিন" class="w-full h-72 sm:h-80 object-cover shadow-inner transition-transform duration-500 hover:scale-105">
+                </div>
+                <div class="pt-3 pb-1 text-center">
+                  <h4 class="font-bold text-base text-white flex items-center justify-center gap-1.5">
+                    <span>ডাঃ মোঃ আলাউদ্দিন</span>
+                    <span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-400/40">হোমিওপ্যাথিক চিকিৎসক</span>
+                  </h4>
+                  <p class="text-xs text-emerald-300 font-medium mt-0.5">বি.এইচ.এম.এস, ডি.এইচ.এম.এস.</p>
+                  <p class="text-[11px] text-slate-300 mt-0.5">চিশতিয়া হোমিও ক্লিনিক • মোবাইল: 01719-158085</p>
+                  <p class="text-[10px] text-emerald-400 mt-2 font-medium bg-emerald-950/80 py-1 px-3 rounded-full inline-block border border-emerald-500/40">
+                    🕒 প্রতিদিন বিকাল ৪:০০ টা থেকে রাত ১০:০০ টা
+                  </p>
+                </div>
+              </div>
             </div>
+
             <div class="text-left">
               <h2 class="text-xl sm:text-2xl font-bold text-white leading-tight">ডাঃ মোঃ আলাউদ্দিন</h2>
               <p class="text-emerald-300 text-xs sm:text-sm font-semibold">হোমিওপ্যাথিক চিকিৎসক</p>
@@ -649,6 +706,29 @@
         </button>
       </div>
 
+    </div>
+  </div>
+
+  <!-- Doctor Photo Lightbox Modal -->
+  <div id="doctorLightboxModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden transition-opacity duration-300" onclick="closeDoctorLightbox()">
+    <div class="relative max-w-lg w-full bg-slate-900 rounded-3xl p-5 border border-emerald-500/40 shadow-2xl text-center transform transition-all duration-300 scale-95" id="doctorLightboxContent" onclick="event.stopPropagation()">
+      <button onclick="closeDoctorLightbox()" class="absolute top-3 right-3 text-white/70 hover:text-white bg-slate-800/90 hover:bg-slate-700 p-2.5 rounded-full transition shadow-lg z-10" title="বন্ধ করুন">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+      <div class="overflow-hidden rounded-2xl bg-slate-950 border border-emerald-500/30 shadow-inner">
+        <img src="/images/doctor.jpg?v=2" alt="ডাঃ মোঃ আলাউদ্দিন" class="w-full max-h-[70vh] object-contain mx-auto transition-transform duration-300 hover:scale-105">
+      </div>
+      <div class="pt-4 pb-1">
+        <h3 class="text-xl font-bold text-white flex items-center justify-center gap-2">
+          <span>ডাঃ মোঃ আলাউদ্দিন</span>
+          <span class="text-xs bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 px-2 py-0.5 rounded-full font-medium">হোমিওপ্যাথিক চিকিৎসক</span>
+        </h3>
+        <p class="text-xs text-emerald-300 font-semibold mt-1">বি.এইচ.এম.এস, ডি.এইচ.এম.এস.</p>
+        <p class="text-xs text-slate-300 mt-0.5">চিশতিয়া হোমিও ক্লিনিক • মোবাইল: 01719-158085, 01619-158085</p>
+        <p class="text-[11px] text-emerald-400 mt-2 bg-emerald-950/60 inline-block px-3 py-1 rounded-full border border-emerald-500/30">
+          🕒 পরামর্শের সময়: প্রতিদিন বিকাল ৪:০০ টা থেকে রাত ১০:০০ টা
+        </p>
+      </div>
     </div>
   </div>
 
