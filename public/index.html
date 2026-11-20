@@ -62,24 +62,6 @@
       visibility: visible;
       transform: scale(1) translateY(0);
     }
-    /* Smooth Clinic Image Hover Zoom Effect */
-    .clinic-hover-container {
-      position: relative;
-    }
-    .clinic-hover-preview {
-      position: absolute;
-      opacity: 0;
-      visibility: hidden;
-      transform: scale(0.92) translateY(6px);
-      transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.25s;
-      z-index: 999;
-      pointer-events: none;
-    }
-    .clinic-hover-container:hover .clinic-hover-preview {
-      opacity: 1;
-      visibility: visible;
-      transform: scale(1) translateY(0);
-    }
     /* Interactive slot chip styles */
     .slot-chip {
       transition: all 0.2s ease;
@@ -140,7 +122,7 @@
         <!-- Search Serial / Token Button -->
         <button onclick="openSearchModal()" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-emerald-800/80 hover:bg-emerald-700 text-emerald-100 rounded-full border border-emerald-600/50 shadow transition" title="পূর্বে বুকিং করা সিরিয়াল খুঁজুন">
           <i data-lucide="search" class="w-3.5 h-3.5 text-emerald-300"></i>
-          <span>সিরিয়াল খুঁজুন</span>
+          <span translate="no" class="notranslate">সিরিয়াল খুঁজুন</span>
         </button>
 
         <!-- WhatsApp Chat Button -->
@@ -266,40 +248,47 @@
 
           </div>
 
-          <!-- Clinic Front Storefront Visual with Hover Zoom Preview -->
-          <div class="clinic-hover-container w-full pt-1 cursor-pointer" onclick="openClinicLightbox()" title="মাউস রাখুন বা ক্লিক করে বড় ছবি দেখুন">
-            <div class="relative group overflow-hidden rounded-2xl border-2 border-emerald-500/50 shadow-lg">
-              <img src="/images/clinic.jpg?v=3" alt="চিশতিয়া হোমিও ক্লিনিক সম্মুখভাগ" class="w-full h-32 sm:h-36 object-cover transition-transform duration-300 group-hover:scale-105">
-              <div class="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-transparent to-transparent flex items-end p-2.5">
+          <!-- Clinic Front Storefront Visual with In-Place Hover Expand -->
+          <div class="w-full pt-1">
+            <div 
+              class="relative group cursor-pointer overflow-hidden rounded-2xl border-2 border-emerald-500/60 shadow-lg transition-all duration-500 ease-out h-36 hover:h-[450px] bg-slate-950" 
+              onclick="openClinicLightbox()" 
+              title="মাউস রাখুন বড় দেখতে, ক্লিক করে ফুল-স্ক্রিন দেখুন"
+            >
+              <img 
+                src="/images/clinic.jpg?v=4" 
+                alt="চিশতিয়া হোমিও ক্লিনিক সম্মুখভাগ" 
+                class="w-full h-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-105"
+              >
+              
+              <!-- Bottom gradient badge (visible in collapsed state, fades on hover) -->
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent flex items-end p-2.5 transition-opacity duration-300 group-hover:opacity-0 pointer-events-none">
                 <div class="flex items-center justify-between w-full text-xs">
-                  <span class="text-emerald-200 font-bold flex items-center gap-1">
+                  <span class="text-emerald-200 font-bold flex items-center gap-1 text-[11px]">
                     <i data-lucide="map-pin" class="w-3.5 h-3.5 text-emerald-400"></i>
                     চিশতিয়া হোমিও ক্লিনিক সম্মুখভাগ
                   </span>
                   <span class="text-[10px] bg-emerald-600/90 text-white font-bold px-2 py-0.5 rounded-full shadow flex items-center gap-1 border border-emerald-400/50">
-                    <i data-lucide="zoom-in" class="w-3 h-3 text-white"></i> বড় দেখুন
+                    <i data-lucide="zoom-in" class="w-3 h-3 text-white"></i> মাউস রাখুন
                   </span>
                 </div>
               </div>
+
+              <!-- Top floating badge (appears smoothly on hover expand) -->
+              <div class="absolute top-0 inset-x-0 bg-gradient-to-b from-slate-950/90 via-slate-950/50 to-transparent p-2.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-between text-xs pointer-events-none">
+                <span class="text-white font-bold text-[11px] bg-emerald-950/90 px-2.5 py-0.5 rounded-full border border-emerald-500/50 flex items-center gap-1 shadow">
+                  <i data-lucide="sparkles" class="w-3 h-3 text-emerald-400"></i> চিশতিয়া হোমিও ক্লিনিক
+                </span>
+                <span class="text-[10px] text-emerald-300 font-semibold bg-slate-900/90 px-2 py-0.5 rounded-full border border-white/20">
+                  ক্লিক করে ফুল-স্ক্রিন
+                </span>
+              </div>
             </div>
 
-            <!-- Enlarge on Hover Card (Shows large only when mouse cursor is hovered over it) -->
-            <div class="clinic-hover-preview left-0 sm:left-full bottom-0 sm:ml-4 mb-2 sm:mb-0 w-80 sm:w-[420px] bg-slate-900/98 backdrop-blur-md p-3.5 rounded-3xl shadow-2xl border-2 border-emerald-400">
-              <div class="overflow-hidden rounded-2xl border border-emerald-500/40 bg-slate-950">
-                <img src="/images/clinic.jpg?v=3" alt="চিশতিয়া হোমিও ক্লিনিক সম্মুখভাগ" class="w-full h-72 sm:h-96 object-contain bg-slate-950 shadow-inner">
-              </div>
-              <div class="pt-2.5 pb-0.5 text-center">
-                <h4 class="font-bold text-sm text-white flex items-center justify-center gap-1.5">
-                  <span>চিশতিয়া হোমিও ক্লিনিক সম্মুখভাগ</span>
-                  <span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-400/40">চেম্বার ভিউ</span>
-                </h4>
-                <p class="text-xs text-emerald-300 font-medium mt-0.5">ডাঃ মোঃ আলাউদ্দিন | বি.এইচ.এম.এস, ডি.এইচ.এম.এস.</p>
-                <p class="text-[11px] text-slate-300 mt-0.5">মোবাইল: 01719-158085, 01619-158085</p>
-                <p class="text-[10px] text-emerald-400 mt-1 font-medium bg-emerald-950/80 py-0.5 px-2.5 rounded-full inline-block border border-emerald-500/30">
-                  🕒 পরামর্শের সময়: প্রতিদিন বিকাল ৪:০০ টা থেকে রাত ১০:০০ টা
-                </p>
-              </div>
-            </div>
+            <p class="text-[11px] text-emerald-300/80 text-center mt-1.5 font-medium flex items-center justify-center gap-1">
+              <i data-lucide="mouse-pointer" class="w-3 h-3 text-emerald-400"></i>
+              <span>মাউস রাখলে সম্পূর্ণ ক্লিনিক বড় হয়ে দেখা যাবে</span>
+            </p>
           </div>
 
         </div>
@@ -321,7 +310,7 @@
               চিশতিয়া হোমিও ক্লিনিক
             </h3>
             <p class="text-slate-300 text-xs sm:text-sm mt-1 leading-relaxed">
-              হোমিওপ্যাথি চিকিৎসা নিন, প্রকৃতির সাথে থাকুন। দীর্ঘস্থায়ী ও জটিল রোগের নিরাপদ ও পার্শ্বপ্রতিক্রিয়াহীন সুচিকিৎসার জন্য ঘরে বসেই সুবিধাজনক সময়ে আপনার সিরিয়াল নিশ্চিত করুন।
+              হোমিওপ্যাথি চিকিৎসা নিন, প্রকৃতির সাথে থাকুন। দীর্ঘস্থায়ী ও জটিল রোগের নিরাপদ ও পার্শ্বপ্রতিক্রিয়াহীন সুচিকিৎসার জন্য ঘরে বসেই সুবিধাজনক সময়ে আপনার <span translate="no" class="notranslate">সিরিয়াল</span> নিশ্চিত করুন।
             </p>
           </div>
 
@@ -380,7 +369,7 @@
             </div>
             <button type="button" onclick="openSearchModal()" class="inline-flex items-center gap-1.5 text-xs text-emerald-300 hover:text-white font-semibold underline underline-offset-4">
               <i data-lucide="ticket" class="w-3.5 h-3.5"></i>
-              <span>আমার সিরিয়াল স্লিপ ডাউনলোড</span>
+              <span>আমার <span translate="no" class="notranslate">সিরিয়াল</span> স্লিপ ডাউনলোড</span>
             </button>
           </div>
 
@@ -399,7 +388,7 @@
             <i data-lucide="calendar-check" class="w-5 h-5 text-emerald-300"></i>
           </div>
           <div>
-            <span class="font-black text-base sm:text-lg block tracking-tight">অনলাইন রোগী শিডিউল ও সিরিয়াল বুকিং</span>
+            <span class="font-black text-base sm:text-lg block tracking-tight">অনলাইন রোগী শিডিউল ও <span translate="no" class="notranslate">সিরিয়াল</span> বুকিং</span>
             <span class="text-emerald-200 text-xs font-normal">চিশতিয়া হোমিও ক্লিনিক • ডাঃ মোঃ আলাউদ্দিন</span>
           </div>
         </div>
