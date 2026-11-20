@@ -9,7 +9,7 @@
   <!-- Google Fonts: Hind Siliguri for Bengali -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
   <script>
@@ -39,10 +39,10 @@
       font-family: 'Hind Siliguri', sans-serif;
     }
     .badge-btn {
-      transition: all 0.2s ease;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .badge-btn:hover {
-      transform: translateY(-1px);
+      transform: translateY(-2px);
     }
     /* Smooth Doctor Image Hover Zoom Effect */
     .doctor-hover-container {
@@ -62,63 +62,111 @@
       visibility: visible;
       transform: scale(1) translateY(0);
     }
+    /* Interactive slot chip styles */
+    .slot-chip {
+      transition: all 0.2s ease;
+    }
+    .slot-chip.selected {
+      background: linear-gradient(135deg, #059669, #047857);
+      color: #ffffff;
+      border-color: #10b981;
+      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+    }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between">
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between antialiased">
 
   <!-- Header Banner -->
-  <header class="bg-gradient-to-r from-emerald-800 via-teal-700 to-emerald-900 text-white shadow-lg sticky top-0 z-40">
-    <div class="max-w-6xl mx-auto px-4 py-3.5 sm:px-6 flex flex-col sm:flex-row justify-between items-center gap-3">
+  <header class="bg-gradient-to-r from-emerald-900 via-teal-800 to-emerald-950 text-white shadow-lg sticky top-0 z-40 border-b border-emerald-700/50">
+    <div class="max-w-6xl mx-auto px-4 py-3 sm:px-6 flex flex-col sm:flex-row justify-between items-center gap-3">
+      
+      <!-- Brand & Doctor Info -->
       <div class="flex items-center gap-3 text-center sm:text-left">
-        <div class="doctor-hover-container cursor-pointer" onclick="openDoctorLightbox()" title="মাউস রাখুন বা ক্লিক করে বড় ছবি দেখুন">
-          <img src="/images/doctor.jpg?v=2" alt="ডাঃ মোঃ আলাউদ্দিন" class="w-12 h-12 rounded-full border-2 border-emerald-300 object-cover shadow-md shrink-0 transition-transform duration-300 hover:scale-110">
+        <div class="doctor-hover-container cursor-pointer shrink-0" onclick="openDoctorLightbox()" title="মাউস রাখুন বা ক্লিক করে বড় ছবি দেখুন">
+          <div class="relative group">
+            <img src="/images/doctor.jpg?v=2" alt="ডাঃ মোঃ আলাউদ্দিন" class="w-12 h-12 rounded-full border-2 border-emerald-300 object-cover shadow-md shrink-0 transition-transform duration-300 group-hover:scale-105">
+            <span class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-400 border-2 border-emerald-950 rounded-full shadow"></span>
+          </div>
           <!-- Mini Hover Tooltip Preview -->
-          <div class="doctor-hover-preview left-0 top-full mt-2 w-56 bg-slate-900/95 backdrop-blur-md p-2.5 rounded-2xl shadow-2xl border-2 border-emerald-400 text-center">
+          <div class="doctor-hover-preview left-0 top-full mt-2 w-56 bg-slate-900/98 backdrop-blur-md p-2.5 rounded-2xl shadow-2xl border-2 border-emerald-400 text-center">
             <img src="/images/doctor.jpg?v=2" alt="ডাঃ মোঃ আলাউদ্দিন" class="w-full h-52 object-cover rounded-xl mb-1.5 shadow">
             <p class="font-bold text-xs text-white">ডাঃ মোঃ আলাউদ্দিন</p>
             <p class="text-[10px] text-emerald-300">বি.এইচ.এম.এস, ডি.এইচ.এম.এস.</p>
             <p class="text-[9px] text-slate-300">চিশতিয়া হোমিও ক্লিনিক</p>
           </div>
         </div>
+
         <div>
           <div class="flex items-center justify-center sm:justify-start gap-1.5">
             <span class="text-base text-emerald-300">🌿</span>
-            <h1 id="headerClinicName" class="text-xl sm:text-2xl font-bold tracking-tight">চিশতিয়া হোমিও ক্লিনিক</h1>
+            <h1 id="headerClinicName" class="text-xl sm:text-2xl font-black tracking-tight text-white drop-shadow-sm">চিশতিয়া হোমিও ক্লিনিক</h1>
           </div>
           <p id="headerDoctorName" class="text-emerald-200 text-xs sm:text-sm font-medium">ডাঃ মোঃ আলাউদ্দিন | বি.এইচ.এম.এস, ডি.এইচ.এম.এস. (হোমিওপ্যাথিক চিকিৎসক)</p>
         </div>
       </div>
+
+      <!-- Quick Action Buttons -->
       <div class="flex flex-wrap items-center justify-center gap-2">
-        <a id="callDoctorBtn" href="tel:01719158085" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold bg-emerald-500 hover:bg-emerald-400 text-slate-900 rounded-full shadow transition">
+        <!-- Search Serial / Token Button -->
+        <button onclick="openSearchModal()" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-emerald-800/80 hover:bg-emerald-700 text-emerald-100 rounded-full border border-emerald-600/50 shadow transition" title="পূর্বে বুকিং করা সিরিয়াল খুঁজুন">
+          <i data-lucide="search" class="w-3.5 h-3.5 text-emerald-300"></i>
+          <span>সিরিয়াল খুঁজুন</span>
+        </button>
+
+        <!-- WhatsApp Chat Button -->
+        <a href="https://wa.me/8801719158085?text=আসসালামু%20আলাইকুম,%20আমি%20চিশতিয়া%20হোমিও%20ক্লিনিকে%20সিরিয়াল%20সম্পর্কে%20জানতে%20চাই।" target="_blank" class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white rounded-full shadow transition" title="হোয়াটসঅ্যাপে চ্যাট করুন">
+          <i data-lucide="message-circle" class="w-3.5 h-3.5 text-white"></i>
+          <span>WhatsApp</span>
+        </a>
+
+        <!-- Call Doctor Button -->
+        <a id="callDoctorBtn" href="tel:01719158085" class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-bold bg-amber-400 hover:bg-amber-300 text-slate-950 rounded-full shadow transition">
           <i data-lucide="phone-call" class="w-3.5 h-3.5"></i>
           <span id="headerPhoneText">01719-158085</span>
         </a>
-        <a id="secondaryPhoneBtn" href="tel:01619158085" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold bg-white/15 hover:bg-white/25 text-white rounded-full border border-white/20 transition">
-          <i data-lucide="phone" class="w-3.5 h-3.5"></i>
-          <span id="secondaryPhoneText">01619-158085</span>
-        </a>
-        <a href="/admin" target="_blank" class="inline-flex items-center gap-1 px-3 py-1.5 text-xs bg-slate-900/60 hover:bg-slate-900/90 border border-emerald-400/30 rounded-full text-emerald-200 transition">
-          <i data-lucide="lock" class="w-3.5 h-3.5"></i>
+
+        <!-- Doctor Login Button -->
+        <a href="/admin" target="_blank" class="inline-flex items-center gap-1 px-3 py-1.5 text-xs bg-slate-900/80 hover:bg-slate-900 border border-emerald-400/30 rounded-full text-emerald-200 transition">
+          <i data-lucide="lock" class="w-3.5 h-3.5 text-emerald-400"></i>
           <span>ডাক্তার লগইন</span>
         </a>
       </div>
+
     </div>
   </header>
 
   <!-- Clinic Info Strip -->
-  <div class="bg-emerald-50 border-b border-emerald-100 py-2.5 text-xs sm:text-sm text-emerald-900">
+  <div class="bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 border-b border-emerald-100/80 py-2 text-xs sm:text-sm text-emerald-950 shadow-sm">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-wrap justify-between items-center gap-2">
-      <div class="flex items-center gap-1.5">
-        <i data-lucide="clock" class="w-4 h-4 text-emerald-700"></i>
-        <span><b>পরামর্শের সময়:</b> <span id="infoVisitingHours" class="font-bold text-emerald-800">প্রতিদিন বিকাল ৪:০০ টা থেকে রাত ১০:০০ টা</span></span>
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-200/60 text-emerald-900 font-bold text-[11px]">
+          <span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
+          আজ চেম্বার খোলা
+        </span>
+        <div class="flex items-center gap-1.5 text-slate-700">
+          <i data-lucide="clock" class="w-3.5 h-3.5 text-emerald-700"></i>
+          <span><b>পরামর্শের সময়:</b> <span id="infoVisitingHours" class="font-bold text-emerald-900">প্রতিদিন বিকাল ৪:০০ টা থেকে রাত ১০:০০ টা</span></span>
+        </div>
       </div>
       <div class="flex items-center gap-3">
         <span class="inline-flex items-center gap-1 text-emerald-800 font-medium">
-          <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600"></i>
+          <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-600"></i>
           সুস্থ দেহ, সুন্দর জীবন
         </span>
         <span class="hidden md:inline-flex items-center gap-1 text-emerald-800 font-medium">
-          <i data-lucide="heart" class="w-4 h-4 text-emerald-600"></i>
+          <i data-lucide="heart" class="w-3.5 h-3.5 text-rose-500"></i>
           সেবাই আমাদের লক্ষ্য
         </span>
       </div>
@@ -126,26 +174,29 @@
   </div>
 
   <!-- Main Booking Container -->
-  <main class="max-w-5xl mx-auto px-4 pt-2.5 pb-6 sm:pt-3.5 sm:pb-8 sm:px-6 w-full flex-1">
+  <main class="max-w-5xl mx-auto px-4 pt-2.5 pb-8 sm:pt-3.5 sm:pb-10 sm:px-6 w-full flex-1">
     
-    <!-- Hero & Clinic Showcase Card -->
-    <div class="bg-gradient-to-br from-emerald-900 via-teal-900 to-slate-900 text-white rounded-3xl p-5 sm:p-6 shadow-xl mb-3 sm:mb-4 relative">
-      <!-- Background glow (isolated overflow-hidden) -->
+    <!-- Hero & Clinic Showcase Card (VIP Modern Glassmorphism Style) -->
+    <div class="bg-gradient-to-br from-emerald-950 via-teal-900 to-slate-950 text-white rounded-3xl p-5 sm:p-7 shadow-2xl mb-3 sm:mb-4 relative border border-emerald-500/30">
+      
+      <!-- Background Ambient Glow -->
       <div class="absolute inset-0 overflow-hidden rounded-3xl pointer-events-none">
-        <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute -right-10 -bottom-10 w-72 h-72 bg-emerald-500/15 rounded-full blur-3xl"></div>
+        <div class="absolute -left-10 -top-10 w-72 h-72 bg-teal-500/10 rounded-full blur-3xl"></div>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center relative z-10">
         
-        <!-- Left: Doctor & Clinic Visual -->
-        <div class="md:col-span-5 flex flex-col items-center sm:items-start text-center sm:text-left space-y-3">
-          <div class="flex items-center gap-3">
+        <!-- Left: Doctor Portrait & Visual Profile -->
+        <div class="md:col-span-5 flex flex-col items-center sm:items-start text-center sm:text-left space-y-3.5">
+          <div class="flex items-center gap-3.5">
             
             <!-- Doctor Avatar with Hover Zoom & Popover -->
-            <div class="doctor-hover-container cursor-pointer" onclick="openDoctorLightbox()" title="মাউস রাখুন বা ক্লিক করে বড় ছবি দেখুন">
+            <div class="doctor-hover-container cursor-pointer shrink-0" onclick="openDoctorLightbox()" title="মাউস রাখুন বা ক্লিক করে বড় ছবি দেখুন">
               <div class="relative group">
-                <img src="/images/doctor.jpg?v=2" alt="ডাঃ মোঃ আলাউদ্দিন" class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl object-cover border-2 border-emerald-400/80 shadow-lg transition-all duration-300 hover:scale-105 hover:border-emerald-300 hover:shadow-2xl">
-                <span class="absolute -bottom-2 -right-2 bg-emerald-500 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-full shadow z-10">
+                <img src="/images/doctor.jpg?v=2" alt="ডাঃ মোঃ আলাউদ্দিন" class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl object-cover border-2 border-emerald-400/80 shadow-xl transition-all duration-300 hover:scale-105 hover:border-emerald-300 hover:shadow-emerald-500/30">
+                <span class="absolute -bottom-2 -right-2 bg-emerald-500 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-full shadow-md z-10 border border-slate-950 flex items-center gap-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-slate-950 animate-ping"></span>
                   অনলাইন
                 </span>
                 <div class="absolute inset-0 bg-slate-950/25 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
@@ -174,76 +225,127 @@
               </div>
             </div>
 
+            <!-- Doctor Bio & Credentials -->
             <div class="text-left">
+              <span class="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-300 bg-emerald-950/80 px-2 py-0.5 rounded-full border border-emerald-500/30 mb-1">
+                <i data-lucide="check-circle-2" class="w-3 h-3 text-emerald-400"></i>
+                সরকারি রেজি. অভিজ্ঞ চিকিৎসক
+              </span>
               <h2 class="text-xl sm:text-2xl font-bold text-white leading-tight">ডাঃ মোঃ আলাউদ্দিন</h2>
-              <p class="text-emerald-300 text-xs sm:text-sm font-semibold">হোমিওপ্যাথিক চিকিৎসক</p>
-              <p class="text-slate-300 text-[11px] mt-0.5">বি.এইচ.এম.এস, ডি.এইচ.এম.এস.</p>
-              <div class="mt-2 inline-flex items-center gap-1 text-[11px] bg-emerald-800/80 border border-emerald-500/40 px-2.5 py-0.5 rounded-full text-emerald-200">
-                <i data-lucide="clock" class="w-3 h-3"></i>
-                <span>বিকাল ৪:০০ - রাত ১০:০০</span>
+              <p class="text-emerald-300 text-xs sm:text-sm font-semibold">হোমিওপ্যাথিক কনসালট্যান্ট ও বিশেষজ্ঞ</p>
+              <p class="text-slate-300 text-[11px] mt-0.5 font-medium">বি.এইচ.এম.এস, ডি.এইচ.এম.এস.</p>
+              
+              <div class="mt-2 flex flex-wrap items-center gap-2">
+                <span class="inline-flex items-center gap-1 text-[11px] bg-emerald-900/60 border border-emerald-500/40 px-2.5 py-0.5 rounded-full text-emerald-200">
+                  <i data-lucide="clock" class="w-3 h-3"></i>
+                  <span>বিকাল ৪:০০ - রাত ১০:০০</span>
+                </span>
+                <span class="inline-flex items-center gap-1 text-[11px] bg-amber-400/20 text-amber-300 border border-amber-400/30 px-2 py-0.5 rounded-full font-semibold">
+                  ★ ৪.৯ (৫০০+ রিভিউ)
+                </span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Clinic Front Storefront Visual with Zoom Preview -->
+          <div class="w-full pt-1">
+            <div class="relative group cursor-pointer overflow-hidden rounded-2xl border border-emerald-500/40 shadow-lg" onclick="openDoctorLightbox()" title="চেম্বারের ছবি দেখুন">
+              <img src="/images/clinic.jpg" alt="চিশতিয়া হোমিও ক্লিনিক সম্মুখভাগ" class="w-full h-32 sm:h-36 object-cover transition-transform duration-500 group-hover:scale-105">
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent flex items-end p-2.5">
+                <div class="flex items-center justify-between w-full text-xs">
+                  <span class="text-emerald-200 font-bold flex items-center gap-1">
+                    <i data-lucide="map-pin" class="w-3.5 h-3.5 text-emerald-400"></i>
+                    চিশতিয়া হোমিও ক্লিনিক সম্মুখভাগ
+                  </span>
+                  <span class="text-[10px] bg-slate-900/80 text-white px-2 py-0.5 rounded-full border border-white/20">
+                    চেম্বার ভিউ
+                  </span>
+                </div>
               </div>
             </div>
           </div>
 
-          <div class="w-full pt-2">
-            <img src="/images/clinic.jpg" alt="চিশতিয়া হোমিও ক্লিনিক" class="w-full h-32 sm:h-36 object-cover rounded-xl border border-emerald-500/30 shadow-md">
-            <p class="text-[11px] text-emerald-300/80 text-center mt-1 font-medium">চিশতিয়া হোমিও ক্লিনিক সম্মুখভাগ</p>
-          </div>
         </div>
 
-        <!-- Right: Clinic Highlights & Slogans -->
+        <!-- Right: Clinic Highlights & Key Healthcare Features -->
         <div class="md:col-span-7 space-y-4">
           <div>
-            <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 mb-2">
-              <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-              প্রকৃতির ছোঁয়ায় সুস্থতার প্রত্যাশা
-            </span>
-            <h3 class="text-2xl sm:text-3xl font-black text-white leading-snug">
+            <div class="flex flex-wrap items-center gap-2 mb-2">
+              <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-emerald-400"></i>
+                প্রকৃতির ছোঁয়ায় সুস্থতার প্রত্যাশা
+              </span>
+              <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-white/10 text-slate-200">
+                ১৫+ বছরের নির্ভরযোগ্য সেবা
+              </span>
+            </div>
+
+            <h3 class="text-2xl sm:text-3xl font-black text-white leading-snug tracking-tight">
               চিশতিয়া হোমিও ক্লিনিক
             </h3>
             <p class="text-slate-300 text-xs sm:text-sm mt-1 leading-relaxed">
-              হোমিওপ্যাথি চিকিৎসা নিন, প্রকৃতির সাথে থাকুন। দীর্ঘস্থায়ী ও জটিল রোগের নিরাপদ ও পার্শ্বপ্রতিক্রিয়াহীন সুচিকিৎসার জন্য ঘরে বসেই আপনার সিরিয়াল নিশ্চিত করুন।
+              হোমিওপ্যাথি চিকিৎসা নিন, প্রকৃতির সাথে থাকুন। দীর্ঘস্থায়ী ও জটিল রোগের নিরাপদ ও পার্শ্বপ্রতিক্রিয়াহীন সুচিকিৎসার জন্য ঘরে বসেই সুবিধাজনক সময়ে আপনার সিরিয়াল নিশ্চিত করুন।
             </p>
           </div>
 
-          <!-- Feature badges -->
+          <!-- Feature Cards Grid -->
           <div class="grid grid-cols-2 gap-2.5 text-xs">
-            <div class="bg-white/10 backdrop-blur-sm p-2.5 rounded-xl border border-white/10 flex items-start gap-2">
-              <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400 shrink-0 mt-0.5"></i>
-              <div>
-                <p class="font-bold text-white">সঠিক রোগ নির্ণয়</p>
-                <p class="text-[11px] text-slate-300">ব্যক্তিগত যত্নসহ বিস্তারিত পরামর্শ</p>
+            
+            <div class="bg-white/10 hover:bg-white/15 backdrop-blur-sm p-3 rounded-2xl border border-white/10 transition-all">
+              <div class="flex items-center gap-2 mb-1">
+                <div class="w-7 h-7 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
+                  <i data-lucide="check-circle" class="w-4 h-4"></i>
+                </div>
+                <p class="font-bold text-white text-xs">সঠিক রোগ নির্ণয়</p>
               </div>
+              <p class="text-[11px] text-slate-300 leading-snug">ব্যক্তিগত যত্ন ও ধাতুগত লক্ষণসহ বিস্তারিত কেস বিশ্লেষণ</p>
             </div>
-            <div class="bg-white/10 backdrop-blur-sm p-2.5 rounded-xl border border-white/10 flex items-start gap-2">
-              <i data-lucide="shield" class="w-4 h-4 text-emerald-400 shrink-0 mt-0.5"></i>
-              <div>
-                <p class="font-bold text-white">পার্শ্বপ্রতিক্রিয়াহীন</p>
-                <p class="text-[11px] text-slate-300">নিরাপদ প্রাকৃতিক হোমিওপ্যাথিক ঔষধ</p>
+
+            <div class="bg-white/10 hover:bg-white/15 backdrop-blur-sm p-3 rounded-2xl border border-white/10 transition-all">
+              <div class="flex items-center gap-2 mb-1">
+                <div class="w-7 h-7 rounded-xl bg-teal-500/20 flex items-center justify-center text-teal-400 shrink-0">
+                  <i data-lucide="shield" class="w-4 h-4"></i>
+                </div>
+                <p class="font-bold text-white text-xs">পার্শ্বপ্রতিক্রিয়াহীন</p>
               </div>
+              <p class="text-[11px] text-slate-300 leading-snug">নিরাপদ প্রাকৃতিক উচ্চমানের হোমিওপ্যাথিক ঔষুধ</p>
             </div>
-            <div class="bg-white/10 backdrop-blur-sm p-2.5 rounded-xl border border-white/10 flex items-start gap-2">
-              <i data-lucide="users" class="w-4 h-4 text-emerald-400 shrink-0 mt-0.5"></i>
-              <div>
-                <p class="font-bold text-white">সকল বয়সের উপযোগী</p>
-                <p class="text-[11px] text-slate-300">শিশু, নারী ও প্রবীণদের বিশেষ সেবা</p>
+
+            <div class="bg-white/10 hover:bg-white/15 backdrop-blur-sm p-3 rounded-2xl border border-white/10 transition-all">
+              <div class="flex items-center gap-2 mb-1">
+                <div class="w-7 h-7 rounded-xl bg-cyan-500/20 flex items-center justify-center text-cyan-400 shrink-0">
+                  <i data-lucide="users" class="w-4 h-4"></i>
+                </div>
+                <p class="font-bold text-white text-xs">সকল বয়সের সেবা</p>
               </div>
+              <p class="text-[11px] text-slate-300 leading-snug">নবজাতক, শিশু, নারী ও প্রবীণদের বিশেষ ও নিরাপদ চিকিৎসা</p>
             </div>
-            <div class="bg-white/10 backdrop-blur-sm p-2.5 rounded-xl border border-white/10 flex items-start gap-2">
-              <i data-lucide="heart-pulse" class="w-4 h-4 text-emerald-400 shrink-0 mt-0.5"></i>
-              <div>
-                <p class="font-bold text-white">স্থায়ী আরোগ্য</p>
-                <p class="text-[11px] text-slate-300">দীর্ঘমেয়াদি সুস্থতার কার্যকরী চিকিৎসা</p>
+
+            <div class="bg-white/10 hover:bg-white/15 backdrop-blur-sm p-3 rounded-2xl border border-white/10 transition-all">
+              <div class="flex items-center gap-2 mb-1">
+                <div class="w-7 h-7 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
+                  <i data-lucide="zap" class="w-4 h-4"></i>
+                </div>
+                <p class="font-bold text-white text-xs">তাৎক্ষণিক অ্যালার্ট</p>
               </div>
+              <p class="text-[11px] text-slate-300 leading-snug">বুকিংয়ের সাথে সাথে সরাসরি ডাক্তারের টেলিগ্রামে তথ্য প্রেরণ</p>
             </div>
+
           </div>
 
-          <!-- Call helpline box -->
-          <div class="flex flex-wrap items-center gap-3 pt-1 text-xs">
-            <span class="text-slate-300 font-medium">পরামর্শ ও যোগাযোগের হেল্পলাইন:</span>
-            <a href="tel:01719158085" class="font-mono font-bold text-emerald-300 hover:text-white underline">01719-158085</a>
-            <span class="text-slate-500">|</span>
-            <a href="tel:01619158085" class="font-mono font-bold text-emerald-300 hover:text-white underline">01619-158085</a>
+          <!-- Helpline & Quick Search Toolbar -->
+          <div class="pt-1 flex flex-wrap items-center justify-between gap-3 text-xs border-t border-white/10">
+            <div class="flex items-center gap-2">
+              <span class="text-slate-300 font-medium">হেল্পলাইন:</span>
+              <a href="tel:01719158085" class="font-mono font-bold text-emerald-300 hover:text-white underline">01719-158085</a>
+              <span class="text-slate-500">|</span>
+              <a href="tel:01619158085" class="font-mono font-bold text-emerald-300 hover:text-white underline">01619-158085</a>
+            </div>
+            <button type="button" onclick="openSearchModal()" class="inline-flex items-center gap-1.5 text-xs text-emerald-300 hover:text-white font-semibold underline underline-offset-4">
+              <i data-lucide="ticket" class="w-3.5 h-3.5"></i>
+              <span>আমার সিরিয়াল স্লিপ ডাউনলোড</span>
+            </button>
           </div>
 
         </div>
@@ -251,115 +353,231 @@
       </div>
     </div>
 
-    <!-- Booking Form Card -->
-    <div class="bg-white rounded-3xl shadow-xl border border-slate-200/80 overflow-hidden">
+    <!-- Booking Form Card (Ultra-Smart & Professional Multi-Step Style) -->
+    <div class="bg-white rounded-3xl shadow-xl border border-slate-200/90 overflow-hidden">
       
       <!-- Stepper / Form Header -->
-      <div class="bg-gradient-to-r from-emerald-700 via-teal-700 to-emerald-800 p-4 sm:p-5 text-white flex flex-col sm:flex-row justify-between items-center gap-2">
-        <div class="flex items-center gap-2.5">
-          <div class="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center">
-            <i data-lucide="clipboard-list" class="w-5 h-5"></i>
+      <div class="bg-gradient-to-r from-emerald-800 via-teal-800 to-emerald-900 p-4 sm:p-5 text-white flex flex-col sm:flex-row justify-between items-center gap-3">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center text-white shadow-inner border border-white/10">
+            <i data-lucide="calendar-check" class="w-5 h-5 text-emerald-300"></i>
           </div>
           <div>
-            <span class="font-bold text-base sm:text-lg block">অনলাইন রোগী শিডিউল বুকিং ফর্ম</span>
+            <span class="font-black text-base sm:text-lg block tracking-tight">অনলাইন রোগী শিডিউল ও সিরিয়াল বুকিং</span>
             <span class="text-emerald-200 text-xs font-normal">চিশতিয়া হোমিও ক্লিনিক • ডাঃ মোঃ আলাউদ্দিন</span>
           </div>
         </div>
-        <span class="text-xs bg-emerald-950/60 px-3 py-1 rounded-full border border-emerald-400/30 text-emerald-200 font-semibold flex items-center gap-1.5">
-          <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400"></i>
-          তাৎক্ষণিক টেলিগ্রাম নোটিফিকেশন
-        </span>
+
+        <div class="flex items-center gap-2">
+          <span class="text-xs bg-emerald-950/70 px-3 py-1.5 rounded-full border border-emerald-400/30 text-emerald-200 font-semibold flex items-center gap-1.5 shadow-sm">
+            <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400"></i>
+            তাৎক্ষণিক টেলিগ্রাম নোটিফিকেশন
+          </span>
+        </div>
       </div>
 
-      <form id="appointmentForm" class="p-6 sm:p-8 space-y-6">
+      <!-- Modern Interactive Step Tracker -->
+      <div class="bg-slate-50/80 px-4 py-3 sm:px-8 border-b border-slate-200/80">
+        <div class="grid grid-cols-4 gap-2 text-center">
+          
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-1.5 text-xs font-bold text-emerald-700">
+            <span class="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs shadow-sm">১</span>
+            <span class="hidden sm:inline">তারিখ ও সময়</span>
+            <span class="sm:hidden text-[10px]">সময়</span>
+          </div>
 
-        <!-- Step 1: Appointment Date & Time Slot -->
-        <div>
-          <h3 class="text-base font-bold text-slate-800 mb-3 flex items-center gap-2 pb-2 border-b border-slate-100">
-            <span class="w-6 h-6 rounded-full bg-emerald-600 text-white text-xs flex items-center justify-center font-bold">১</span>
-            অ্যাপয়েন্টমেন্টের তারিখ ও সময় নির্বাচন করুন <span class="text-red-500">*</span>
-          </h3>
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-1.5 text-xs font-semibold text-slate-600">
+            <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-xs">২</span>
+            <span class="hidden sm:inline">রোগীর তথ্য</span>
+            <span class="sm:hidden text-[10px]">তথ্য</span>
+          </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Date Picker -->
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-1.5 text-xs font-semibold text-slate-600">
+            <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-xs">৩</span>
+            <span class="hidden sm:inline">শারীরিক লক্ষণ</span>
+            <span class="sm:hidden text-[10px]">লক্ষণ</span>
+          </div>
+
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-1.5 text-xs font-semibold text-slate-600">
+            <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-xs">৪</span>
+            <span class="hidden sm:inline">ফি ও নিশ্চিতকরণ</span>
+            <span class="sm:hidden text-[10px]">পেমেন্ট</span>
+          </div>
+
+        </div>
+      </div>
+
+      <form id="appointmentForm" class="p-5 sm:p-8 space-y-7">
+
+        <!-- ==================== STEP 1: Date & Time Slot ==================== -->
+        <div class="bg-slate-50/50 p-4 sm:p-5 rounded-2xl border border-slate-200/70">
+          <div class="flex items-center justify-between pb-2 mb-3 border-b border-slate-200">
+            <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-emerald-600 text-white text-xs flex items-center justify-center font-bold">১</span>
+              অ্যাপয়েন্টমেন্টের তারিখ ও সময় নির্বাচন করুন <span class="text-red-500">*</span>
+            </h3>
+            <span class="text-xs text-emerald-700 font-semibold hidden sm:inline-block">🕒 বিকাল ৪:০০ টা - রাত ১০:০০ টা</span>
+          </div>
+
+          <div class="space-y-4">
+            
+            <!-- Quick Date Selection & Calendar -->
             <div>
-              <label for="appointmentDate" class="block text-xs font-semibold text-slate-700 mb-1">
-                তারিখ নির্বাচন করুন <span class="text-red-500">*</span>
-              </label>
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                <label for="appointmentDate" class="text-xs font-bold text-slate-700 flex items-center gap-1">
+                  <i data-lucide="calendar" class="w-3.5 h-3.5 text-emerald-600"></i>
+                  তারিখ নির্বাচন করুন: <span class="text-red-500">*</span>
+                </label>
+                <!-- Quick Date Chips -->
+                <div class="flex items-center gap-1.5">
+                  <button type="button" onclick="setQuickDate(0)" id="btnDateToday" class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-emerald-600 text-white shadow-sm transition">
+                    আজকের জন্য
+                  </button>
+                  <button type="button" onclick="setQuickDate(1)" id="btnDateTomorrow" class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+                    আগামীকাল
+                  </button>
+                </div>
+              </div>
+
               <div class="relative">
                 <input 
                   type="date" 
                   id="appointmentDate" 
                   name="appointmentDate" 
                   required
-                  class="w-full pl-3.5 pr-3 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm text-slate-800 shadow-sm transition"
+                  class="w-full pl-3.5 pr-3 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm font-semibold text-slate-800 shadow-sm transition bg-white"
                 >
               </div>
-              <p class="text-[11px] text-slate-500 mt-1">আজ বা যেকোনো আগামী দিন নির্বাচন করুন</p>
+              <div class="flex justify-between items-center mt-1">
+                <p id="selectedDateHuman" class="text-xs font-medium text-emerald-700"></p>
+                <div id="slotNotice" class="text-xs font-medium text-emerald-700"></div>
+              </div>
             </div>
 
-            <!-- Slot Selection -->
+            <!-- Native select (kept hidden but synchronized for 100% backend form compatibility) -->
+            <select id="timeSlot" name="timeSlot" required class="sr-only">
+              <option value="">প্রথমে তারিখ নির্বাচন করুন...</option>
+            </select>
+
+            <!-- Interactive Visual Slot Selector Chips -->
             <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1">
-                সময় স্লট বেছে নিন (বিকাল ৪:০০ - রাত ১০:০০) <span class="text-red-500">*</span>
+              <label class="block text-xs font-bold text-slate-700 mb-2">
+                পছন্দের সময় স্লটে ট্যাপ করুন: <span class="text-red-500">*</span>
               </label>
-              <select 
-                id="timeSlot" 
-                name="timeSlot" 
-                required
-                class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm text-slate-800 shadow-sm transition"
-              >
-                <option value="">প্রথমে তারিখ নির্বাচন করুন...</option>
-              </select>
-              <div id="slotNotice" class="text-[11px] text-emerald-700 mt-1"></div>
+
+              <!-- Afternoon Shift Grid -->
+              <div class="mb-3">
+                <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-1.5 flex items-center gap-1">
+                  <span>🌅 বিকাল শিফট (০৪:০০ PM - ০৭:০০ PM)</span>
+                </span>
+                <div id="afternoonSlotsContainer" class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+                  <!-- Dynamically rendered -->
+                  <div class="p-2 text-center text-slate-400 bg-white rounded-xl border border-slate-200">স্লট লোড হচ্ছে...</div>
+                </div>
+              </div>
+
+              <!-- Night Shift Grid -->
+              <div>
+                <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-1.5 flex items-center gap-1">
+                  <span>🌙 সন্ধ্যা ও রাত শিফট (০৭:০০ PM - ১০:০০ PM)</span>
+                </span>
+                <div id="nightSlotsContainer" class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+                  <!-- Dynamically rendered -->
+                  <div class="p-2 text-center text-slate-400 bg-white rounded-xl border border-slate-200">স্লট লোড হচ্ছে...</div>
+                </div>
+              </div>
+
             </div>
+
           </div>
         </div>
 
-        <!-- Step 2: Patient Personal Information -->
-        <div>
-          <h3 class="text-base font-bold text-slate-800 mb-3 flex items-center gap-2 pb-2 border-b border-slate-100">
+        <!-- ==================== STEP 2: Patient Info ==================== -->
+        <div class="bg-slate-50/50 p-4 sm:p-5 rounded-2xl border border-slate-200/70">
+          <h3 class="text-base font-bold text-slate-800 mb-3 flex items-center gap-2 pb-2 border-b border-slate-200">
             <span class="w-6 h-6 rounded-full bg-emerald-600 text-white text-xs flex items-center justify-center font-bold">২</span>
             রোগীর ব্যক্তিগত তথ্য
           </h3>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             
+            <!-- Patient Type Card Toggle -->
+            <div class="sm:col-span-2 lg:col-span-3">
+              <label class="block text-xs font-bold text-slate-700 mb-1.5">
+                রোগীর ধরন নির্বাচন করুন: <span class="text-red-500">*</span>
+              </label>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <label id="typeCardNew" class="flex items-center gap-3 p-3 rounded-xl border-2 border-emerald-500 bg-emerald-50/50 cursor-pointer transition shadow-sm" onclick="selectPatientType('নতুন রোগী')">
+                  <input type="radio" name="patientType" value="নতুন রোগী" checked class="text-emerald-600 focus:ring-emerald-500">
+                  <div>
+                    <span class="text-xs font-bold text-slate-900 block flex items-center gap-1">
+                      <span>✨ নতুন রোগী (First Visit)</span>
+                      <span class="text-[10px] bg-emerald-200/70 text-emerald-900 px-1.5 py-0.2 rounded font-semibold">ভিজিট: ৫০০/-</span>
+                    </span>
+                    <span class="text-[11px] text-slate-500">প্রথমবার ডাক্তারের কাছে স্বাস্থ্য সেবা নিচ্ছেন</span>
+                  </div>
+                </label>
+
+                <label id="typeCardOld" class="flex items-center gap-3 p-3 rounded-xl border-2 border-slate-200 bg-white cursor-pointer transition hover:bg-slate-50" onclick="selectPatientType('পুরাতন রোগী (ফলোআপ)')">
+                  <input type="radio" name="patientType" value="পুরাতন রোগী (ফলোআপ)" class="text-emerald-600 focus:ring-emerald-500">
+                  <div>
+                    <span class="text-xs font-bold text-slate-900 block flex items-center gap-1">
+                      <span>🔄 পুরাতন / ফলো-আপ রোগী</span>
+                      <span class="text-[10px] bg-teal-100 text-teal-800 px-1.5 py-0.2 rounded font-semibold">ভিজিট: ৩০০/-</span>
+                    </span>
+                    <span class="text-[11px] text-slate-500">পূর্বে চিকিৎসা নিয়েছেন এবং ফলোআপ পরামর্শ চান</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+
             <!-- Patient Name -->
             <div class="sm:col-span-2">
-              <label for="patientName" class="block text-xs font-semibold text-slate-700 mb-1">
+              <label for="patientName" class="block text-xs font-bold text-slate-700 mb-1">
                 রোগীর পুরো নাম <span class="text-red-500">*</span>
               </label>
-              <input 
-                type="text" 
-                id="patientName" 
-                name="patientName" 
-                required
-                placeholder="যেমন: মোঃ কামরুল হাসান" 
-                class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm shadow-sm transition"
-              >
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                  <i data-lucide="user" class="w-4 h-4"></i>
+                </div>
+                <input 
+                  type="text" 
+                  id="patientName" 
+                  name="patientName" 
+                  required
+                  placeholder="যেমন: মোঃ কামরুল হাসান" 
+                  class="w-full pl-9 pr-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm shadow-sm transition bg-white"
+                  oninput="updateLiveSummary()"
+                >
+              </div>
             </div>
 
             <!-- Phone Number -->
             <div>
-              <label for="phone" class="block text-xs font-semibold text-slate-700 mb-1">
+              <label for="phone" class="block text-xs font-bold text-slate-700 mb-1">
                 মোবাইল নম্বর <span class="text-red-500">*</span>
               </label>
-              <input 
-                type="tel" 
-                id="phone" 
-                name="phone" 
-                required
-                placeholder="01XXXXXXXXX" 
-                maxlength="14"
-                class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm shadow-sm transition font-mono"
-              >
-              <p class="text-[11px] text-slate-500 mt-1">এই নম্বরে যোগাযোগ করা হবে</p>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 font-bold text-xs">
+                  🇧🇩
+                </div>
+                <input 
+                  type="tel" 
+                  id="phone" 
+                  name="phone" 
+                  required
+                  placeholder="01XXXXXXXXX" 
+                  maxlength="14"
+                  class="w-full pl-10 pr-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm shadow-sm transition font-mono bg-white"
+                  oninput="updateLiveSummary()"
+                >
+              </div>
+              <p class="text-[11px] text-slate-500 mt-1">সিরিয়াল টোকেন ও কনফার্মেশন পাঠানো হবে</p>
             </div>
 
             <!-- Age -->
             <div>
-              <label for="age" class="block text-xs font-semibold text-slate-700 mb-1">
+              <label for="age" class="block text-xs font-bold text-slate-700 mb-1">
                 বয়স (বছর) <span class="text-red-500">*</span>
               </label>
               <input 
@@ -370,21 +588,16 @@
                 max="120" 
                 required
                 placeholder="যেমন: ৩২" 
-                class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm shadow-sm transition"
+                class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm shadow-sm transition bg-white"
               >
             </div>
 
-            <!-- Gender -->
+            <!-- Gender Visual Chips -->
             <div>
-              <label for="gender" class="block text-xs font-semibold text-slate-700 mb-1">
+              <label class="block text-xs font-bold text-slate-700 mb-1">
                 লিঙ্গ <span class="text-red-500">*</span>
               </label>
-              <select 
-                id="gender" 
-                name="gender" 
-                required
-                class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm shadow-sm transition"
-              >
+              <select id="gender" name="gender" required class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm shadow-sm transition bg-white">
                 <option value="পুরুষ">পুরুষ (Male)</option>
                 <option value="মহিলা">মহিলা (Female)</option>
                 <option value="শিশু">শিশু (Child)</option>
@@ -392,89 +605,87 @@
               </select>
             </div>
 
-            <!-- Patient Type -->
-            <div>
-              <label for="patientType" class="block text-xs font-semibold text-slate-700 mb-1">
-                রোগীর ধরন <span class="text-red-500">*</span>
-              </label>
-              <select 
-                id="patientType" 
-                name="patientType" 
-                required
-                class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm shadow-sm transition"
-              >
-                <option value="নতুন রোগী">নতুন রোগী (New Patient)</option>
-                <option value="পুরাতন রোগী (ফলোআপ)">পুরাতন রোগী / ফলোআপ (Follow-up)</option>
-              </select>
-            </div>
-
             <!-- Address -->
             <div class="sm:col-span-2 lg:col-span-3">
-              <label for="address" class="block text-xs font-semibold text-slate-700 mb-1">
+              <label for="address" class="block text-xs font-bold text-slate-700 mb-1">
                 ঠিকানা / এলাকা (গ্রাম/মহল্লা, থানা, জেলা)
               </label>
-              <input 
-                type="text" 
-                id="address" 
-                name="address" 
-                placeholder="যেমন: বাড়ি নং ৪, রোড নং ২, থানা..." 
-                class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm shadow-sm transition"
-              >
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                  <i data-lucide="map-pin" class="w-4 h-4"></i>
+                </div>
+                <input 
+                  type="text" 
+                  id="address" 
+                  name="address" 
+                  placeholder="যেমন: বাড়ি নং ৪, রোড নং ২, থানা..." 
+                  class="w-full pl-9 pr-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm shadow-sm transition bg-white"
+                >
+              </div>
             </div>
+
           </div>
         </div>
 
-        <!-- Step 3: Homeopathic Symptoms & History -->
-        <div>
-          <h3 class="text-base font-bold text-slate-800 mb-3 flex items-center gap-2 pb-2 border-b border-slate-100">
+        <!-- ==================== STEP 3: Symptoms & History ==================== -->
+        <div class="bg-slate-50/50 p-4 sm:p-5 rounded-2xl border border-slate-200/70">
+          <h3 class="text-base font-bold text-slate-800 mb-3 flex items-center gap-2 pb-2 border-b border-slate-200">
             <span class="w-6 h-6 rounded-full bg-emerald-600 text-white text-xs flex items-center justify-center font-bold">৩</span>
             শারীরিক লক্ষণ ও স্বাস্থ্য সমস্যা (হোমিওপ্যাথিক বিবরণ)
           </h3>
 
-          <div class="space-y-3">
+          <div class="space-y-4">
             
-            <!-- Quick Symptom Tags directly matching Dr. Alauddin's Banner -->
+            <!-- Quick Interactive Symptom Badges -->
             <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1.5">
-                দ্রুত লক্ষণ নির্বাচন করতে ট্যাপ করুন (বিজ্ঞাপন অনুযায়ী):
-              </label>
+              <div class="flex items-center justify-between mb-1.5">
+                <label class="text-xs font-bold text-slate-700 flex items-center gap-1">
+                  <i data-lucide="sparkles" class="w-3.5 h-3.5 text-emerald-600"></i>
+                  প্রধান লক্ষণসমূহ সিলেক্ট করুন (ট্যাপ করে যুক্ত করুন):
+                </label>
+                <span class="text-[11px] text-slate-400">ক্লিক করলেই যুক্ত হবে</span>
+              </div>
+
               <div class="flex flex-wrap gap-2 text-xs">
-                <button type="button" onclick="addSymptomTag('গ্যাস্ট্রিক ও অম্লতা')" class="badge-btn px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 font-medium">
-                  + গ্যাস্ট্রিক ও অম্লতা
+                <button type="button" onclick="toggleSymptomTag('গ্যাস্ট্রিক ও অম্লতা', this)" class="badge-btn px-3 py-1.5 rounded-xl bg-white text-slate-700 border border-slate-200 hover:border-emerald-400 font-medium flex items-center gap-1 shadow-sm">
+                  <span>🫄 গ্যাস্ট্রিক ও অম্লতা</span>
                 </button>
-                <button type="button" onclick="addSymptomTag('সর্দি-কাশি ও জ্বর')" class="badge-btn px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 font-medium">
-                  + সর্দি-কাশি, জ্বর
+                <button type="button" onclick="toggleSymptomTag('সর্দি-কাশি ও জ্বর', this)" class="badge-btn px-3 py-1.5 rounded-xl bg-white text-slate-700 border border-slate-200 hover:border-emerald-400 font-medium flex items-center gap-1 shadow-sm">
+                  <span>🤧 সর্দি-কাশি, জ্বর</span>
                 </button>
-                <button type="button" onclick="addSymptomTag('হাঁপানি ও শ্বাসকষ্ট')" class="badge-btn px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 font-medium">
-                  + হাঁপানি ও শ্বাসকষ্ট
+                <button type="button" onclick="toggleSymptomTag('হাঁপানি ও শ্বাসকষ্ট', this)" class="badge-btn px-3 py-1.5 rounded-xl bg-white text-slate-700 border border-slate-200 hover:border-emerald-400 font-medium flex items-center gap-1 shadow-sm">
+                  <span>🌬️ হাঁপানি ও শ্বাসকষ্ট</span>
                 </button>
-                <button type="button" onclick="addSymptomTag('পেটের সমস্যা, ডায়রিয়া ও আমাশয়')" class="badge-btn px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 font-medium">
-                  + পেটের সমস্যা / আমাশয়
+                <button type="button" onclick="toggleSymptomTag('পেটের সমস্যা / আমাশয়', this)" class="badge-btn px-3 py-1.5 rounded-xl bg-white text-slate-700 border border-slate-200 hover:border-emerald-400 font-medium flex items-center gap-1 shadow-sm">
+                  <span>🚽 পেটের সমস্যা ও আমাশয়</span>
                 </button>
-                <button type="button" onclick="addSymptomTag('চর্মরোগ (একজিমা, এলার্জি)')" class="badge-btn px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 font-medium">
-                  + চর্মরোগ (একজিমা, এলার্জি)
+                <button type="button" onclick="toggleSymptomTag('চর্মরোগ (একজিমা, এলার্জি)', this)" class="badge-btn px-3 py-1.5 rounded-xl bg-white text-slate-700 border border-slate-200 hover:border-emerald-400 font-medium flex items-center gap-1 shadow-sm">
+                  <span>🩺 চর্মরোগ (একজিমা, চুলকানি)</span>
                 </button>
-                <button type="button" onclick="addSymptomTag('মাইগ্রেন ও মাথাব্যথা')" class="badge-btn px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 font-medium">
-                  + মাইগ্রেন ও মাথাব্যথা
+                <button type="button" onclick="toggleSymptomTag('মাইগ্রেন ও মাথাব্যথা', this)" class="badge-btn px-3 py-1.5 rounded-xl bg-white text-slate-700 border border-slate-200 hover:border-emerald-400 font-medium flex items-center gap-1 shadow-sm">
+                  <span>🧠 মাইগ্রেন ও মাথাব্যথা</span>
                 </button>
-                <button type="button" onclick="addSymptomTag('বাত-ব্যথা ও আর্থ্রাইটিস')" class="badge-btn px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 font-medium">
-                  + বাত-ব্যথা ও আর্থ্রাইটিস
+                <button type="button" onclick="toggleSymptomTag('বাত-ব্যথা ও আর্থ্রাইটিস', this)" class="badge-btn px-3 py-1.5 rounded-xl bg-white text-slate-700 border border-slate-200 hover:border-emerald-400 font-medium flex items-center gap-1 shadow-sm">
+                  <span>🦵 বাত-ব্যথা ও জয়েন্ট পেইন</span>
                 </button>
-                <button type="button" onclick="addSymptomTag('অনিদ্রা ও মানসিক চাপ')" class="badge-btn px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 font-medium">
-                  + অনিদ্রা ও মানসিক চাপ
+                <button type="button" onclick="toggleSymptomTag('অনিদ্রা ও মানসিক চাপ', this)" class="badge-btn px-3 py-1.5 rounded-xl bg-white text-slate-700 border border-slate-200 hover:border-emerald-400 font-medium flex items-center gap-1 shadow-sm">
+                  <span>😴 অনিদ্রা ও মানসিক চাপ</span>
                 </button>
-                <button type="button" onclick="addSymptomTag('নারী রোগ ও বন্ধ্যাত্ব')" class="badge-btn px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 font-medium">
-                  + নারী রোগ ও বন্ধ্যাত্ব
+                <button type="button" onclick="toggleSymptomTag('নারী রোগ ও বন্ধ্যাত্ব', this)" class="badge-btn px-3 py-1.5 rounded-xl bg-white text-slate-700 border border-slate-200 hover:border-emerald-400 font-medium flex items-center gap-1 shadow-sm">
+                  <span>🌸 নারী রোগ ও বন্ধ্যাত্ব</span>
                 </button>
-                <button type="button" onclick="addSymptomTag('শিশুদের রোগ')" class="badge-btn px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 font-medium">
-                  + শিশুদের রোগ
+                <button type="button" onclick="toggleSymptomTag('শিশুদের রোগ', this)" class="badge-btn px-3 py-1.5 rounded-xl bg-white text-slate-700 border border-slate-200 hover:border-emerald-400 font-medium flex items-center gap-1 shadow-sm">
+                  <span>👶 শিশুদের রোগ</span>
+                </button>
+                <button type="button" onclick="toggleSymptomTag('পাইলস ও মলদ্বারের সমস্যা', this)" class="badge-btn px-3 py-1.5 rounded-xl bg-white text-slate-700 border border-slate-200 hover:border-emerald-400 font-medium flex items-center gap-1 shadow-sm">
+                  <span>🩸 পাইলস ও ফিস্টুলা</span>
                 </button>
               </div>
             </div>
 
-            <!-- Main Symptoms Textarea -->
+            <!-- Detailed Symptoms Textarea -->
             <div>
-              <label for="symptoms" class="block text-xs font-semibold text-slate-700 mb-1">
+              <label for="symptoms" class="block text-xs font-bold text-slate-700 mb-1">
                 প্রধান সমস্যা ও বিশেষ লক্ষণসমূহ বিস্তারিত লিখুন <span class="text-red-500">*</span>
               </label>
               <textarea 
@@ -482,15 +693,19 @@
                 name="symptoms" 
                 rows="3" 
                 required
-                placeholder="হোমিওপ্যাথিতে সঠিক চিকিৎসার জন্য লক্ষণের সঠিক বিবরণ জরুরি। যেমন: সমস্যাটি কখন বাড়ে/কমে, ঠান্ডা না গরম বেশি লাগে, প্রস্রাব-পায়খানার অবস্থা ইত্যাদি..." 
-                class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm shadow-sm transition"
+                placeholder="হোমিওপ্যাথিতে সঠিক চিকিৎসার জন্য লক্ষণের সঠিক বিবরণ জরুরি। যেমন: সমস্যাটি কখন বাড়ে/কমে, ঠান্ডা না গরম বেশি লাগে, মল-মূত্রের অবস্থা ইত্যাদি..." 
+                class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm shadow-sm transition bg-white leading-relaxed"
               ></textarea>
+              <p class="text-[11px] text-emerald-700 mt-1 flex items-center gap-1">
+                <i data-lucide="info" class="w-3.5 h-3.5 text-emerald-600"></i>
+                টিপস: রোগীর শীতকাতর বা গরমকাতর স্বভাব, পিপাসা ও রুচি উল্লেখ করলে ডাক্তার সহজে ওষুধ নির্বাচন করতে পারেন।
+              </p>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <!-- Duration -->
               <div>
-                <label for="duration" class="block text-xs font-semibold text-slate-700 mb-1">
+                <label for="duration" class="block text-xs font-bold text-slate-700 mb-1">
                   সমস্যাটি কতদিন ধরে? (স্থায়িত্ব)
                 </label>
                 <input 
@@ -498,35 +713,37 @@
                   id="duration" 
                   name="duration" 
                   placeholder="যেমন: ৩ সপ্তাহ / ৬ মাস / দীর্ঘ ১ বছর" 
-                  class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm shadow-sm transition"
+                  class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm shadow-sm transition bg-white"
                 >
               </div>
 
               <!-- Past History -->
               <div>
-                <label for="pastHistory" class="block text-xs font-semibold text-slate-700 mb-1">
+                <label for="pastHistory" class="block text-xs font-bold text-slate-700 mb-1">
                   পূর্বে কোনো চিকিৎসা বা ওষুধ নিয়েছিলেন?
                 </label>
                 <input 
                   type="text" 
                   id="pastHistory" 
                   name="pastHistory" 
-                  placeholder="যেমন: পূর্বে চিকিৎসা নিয়ে সাময়িক উপশম হয়েছে কিন্তু সম্পূর্ণ সারেনি" 
-                  class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm shadow-sm transition"
+                  placeholder="যেমন: এলোপ্যাথিক ওষুধ খেয়েছি কিন্তু স্থায়ী সমাধান হয়নি" 
+                  class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm shadow-sm transition bg-white"
                 >
               </div>
             </div>
 
             <!-- Prescription Upload (Optional) -->
             <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1">
+              <label class="block text-xs font-bold text-slate-700 mb-1">
                 পূর্বের প্রেসক্রিপশন বা টেস্ট রিপোর্টের ছবি (ঐচ্ছিক)
               </label>
-              <div class="mt-1 flex justify-center px-4 pt-3 pb-4 border-2 border-slate-200 border-dashed rounded-xl hover:border-emerald-400 bg-slate-50/50 transition cursor-pointer" onclick="document.getElementById('prescription').click()">
+              <div class="mt-1 flex justify-center px-4 pt-3 pb-4 border-2 border-slate-300 border-dashed rounded-2xl hover:border-emerald-500 bg-white hover:bg-emerald-50/20 transition cursor-pointer" onclick="document.getElementById('prescription').click()">
                 <div class="space-y-1 text-center">
-                  <i data-lucide="upload-cloud" class="mx-auto h-7 w-7 text-slate-400"></i>
+                  <div class="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 mx-auto flex items-center justify-center">
+                    <i data-lucide="upload-cloud" class="h-5 w-5"></i>
+                  </div>
                   <div class="flex text-xs text-slate-600 justify-center">
-                    <span class="font-medium text-emerald-600 hover:text-emerald-500">ফাইল আপলোড করতে ক্লিক করুন</span>
+                    <span class="font-bold text-emerald-700 hover:text-emerald-800">প্রেসক্রিপশন আপলোড করতে ক্লিক করুন</span>
                   </div>
                   <p class="text-[11px] text-slate-400" id="fileUploadName">JPG, PNG বা PDF (সর্বোচ্চ ৫ মেগাবাইট)</p>
                 </div>
@@ -537,85 +754,98 @@
           </div>
         </div>
 
-        <!-- Step 4: Payment Method (Cash or bKash/Nagad) -->
-        <div>
-          <h3 class="text-base font-bold text-slate-800 mb-3 flex items-center gap-2 pb-2 border-b border-slate-100">
-            <span class="w-6 h-6 rounded-full bg-emerald-600 text-white text-xs flex items-center justify-center font-bold">৪</span>
-            পরামর্শ ফি ও পেমেন্ট পদ্ধতি
-          </h3>
+        <!-- ==================== STEP 4: Payment Methods ==================== -->
+        <div class="bg-slate-50/50 p-4 sm:p-5 rounded-2xl border border-slate-200/70">
+          <div class="flex items-center justify-between pb-2 mb-3 border-b border-slate-200">
+            <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-emerald-600 text-white text-xs flex items-center justify-center font-bold">৪</span>
+              পরামর্শ ফি ও পেমেন্ট পদ্ধতি
+            </h3>
+            <span class="text-xs font-bold text-emerald-800 bg-emerald-100/80 px-2.5 py-0.5 rounded-full" id="feeBadgeDisplay">ফি: ৫০০/-</span>
+          </div>
 
           <div class="space-y-3">
             
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <!-- Option 1: Cash at clinic -->
-              <label class="relative flex items-center gap-3 p-3.5 border-2 rounded-2xl cursor-pointer hover:bg-slate-50 transition border-emerald-500 bg-emerald-50/40 payment-option" id="labelPayCash">
+              <label class="relative flex items-center gap-3 p-4 border-2 rounded-2xl cursor-pointer hover:bg-slate-50 transition border-emerald-500 bg-emerald-50/50 payment-option shadow-sm" id="labelPayCash">
                 <input type="radio" name="paymentMethod" value="Cash at Clinic" checked onchange="handlePaymentChange('Cash at Clinic')" class="text-emerald-600 focus:ring-emerald-500">
                 <div>
-                  <span class="font-bold text-xs text-slate-800 block">ক্লিনিকে এসে পরিশোধ করব (Cash)</span>
-                  <span class="text-[11px] text-slate-500">চেম্বারে উপস্থিত হয়ে ভিজিট ফি প্রদান করবেন</span>
+                  <span class="font-bold text-xs text-slate-900 block flex items-center gap-1.5">
+                    <span>💵 ক্লিনিকে এসে পরিশোধ করব (Cash)</span>
+                    <span class="text-[10px] bg-emerald-200 text-emerald-900 px-1.5 py-0.2 rounded font-bold">ফ্রি বুকিং</span>
+                  </span>
+                  <span class="text-[11px] text-slate-600">কোনো অগ্রিম ফি লাগবে না, সরাসরি চেম্বারে এসে ফি দিবেন</span>
                 </div>
               </label>
 
               <!-- Option 2: bKash / Nagad -->
-              <label class="relative flex items-center gap-3 p-3.5 border-2 rounded-2xl cursor-pointer hover:bg-slate-50 transition border-slate-200 payment-option" id="labelPayMobile">
+              <label class="relative flex items-center gap-3 p-4 border-2 rounded-2xl cursor-pointer hover:bg-slate-50 transition border-slate-200 bg-white payment-option" id="labelPayMobile">
                 <input type="radio" name="paymentMethod" value="bKash / Nagad" onchange="handlePaymentChange('bKash / Nagad')" class="text-emerald-600 focus:ring-emerald-500">
                 <div>
-                  <span class="font-bold text-xs text-slate-800 block">বিকাশ / নগদ (Send Money)</span>
-                  <span class="text-[11px] text-slate-500">অগ্রিম ফি দিয়ে সিরিয়াল চূড়ান্ত নিশ্চিত করুন</span>
+                  <span class="font-bold text-xs text-slate-900 block flex items-center gap-1.5">
+                    <span>📱 বিকাশ / নগদ (Send Money)</span>
+                    <span class="text-[10px] bg-amber-100 text-amber-900 px-1.5 py-0.2 rounded font-bold">ভিআইপি নিশ্চিতকরণ</span>
+                  </span>
+                  <span class="text-[11px] text-slate-600">অগ্রিম ফি দিয়ে সিরিয়াল চূড়ান্ত নিশ্চিত করুন</span>
                 </div>
               </label>
             </div>
 
             <!-- Mobile Banking Details (Hidden by default) -->
-            <div id="mobileBankingDetails" class="hidden bg-emerald-50/60 border border-emerald-300 rounded-2xl p-4 space-y-3">
+            <div id="mobileBankingDetails" class="hidden bg-emerald-50/70 border border-emerald-300 rounded-2xl p-4 space-y-3">
               <div class="flex flex-wrap items-center justify-between gap-2 border-b border-emerald-200 pb-2">
                 <div class="text-xs">
                   <span class="font-bold text-emerald-950">পরামর্শ ফি:</span>
                   <span class="text-emerald-800 font-semibold" id="payFeeNotice">নতুন রোগী: ৫০০ টাকা | পুরাতন রোগী: ৩০০ টাকা</span>
                 </div>
-                <span class="text-[11px] bg-emerald-200/60 text-emerald-900 px-2 py-0.5 rounded-full font-bold">Personal Number</span>
+                <span class="text-[11px] bg-emerald-200/80 text-emerald-900 px-2 py-0.5 rounded-full font-bold">Personal Number (Send Money)</span>
               </div>
 
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+                <!-- bKash Box -->
                 <div class="bg-white p-3 rounded-xl border border-pink-200 flex items-center justify-between shadow-sm">
-                  <div class="flex items-center gap-2">
-                    <span class="w-7 h-7 rounded-lg bg-pink-600 text-white font-bold flex items-center justify-center text-[10px]">বিকাশ</span>
+                  <div class="flex items-center gap-2.5">
+                    <span class="w-8 h-8 rounded-lg bg-pink-600 text-white font-black flex items-center justify-center text-[10px] shadow">বিকাশ</span>
                     <div>
                       <p class="text-[10px] text-slate-500 font-semibold">বিকাশ পার্সোনাল নম্বর:</p>
-                      <p class="font-mono font-bold text-slate-800 text-sm" id="payBkashNum">01719-158085</p>
+                      <p class="font-mono font-bold text-slate-900 text-sm tracking-wide" id="payBkashNum">01719-158085</p>
                     </div>
                   </div>
-                  <button type="button" onclick="navigator.clipboard.writeText(document.getElementById('payBkashNum').textContent.replace(/[^0-9]/g, '')); alert('বিকাশ নম্বর কপি করা হয়েছে!');" class="p-1.5 text-xs text-pink-600 hover:bg-pink-50 rounded" title="কপি করুন">
-                    <i data-lucide="copy" class="w-4 h-4"></i>
+                  <button type="button" onclick="copyNumber('01719158085', 'বিকাশ নম্বর কপি করা হয়েছে!')" class="px-2.5 py-1 text-xs font-semibold bg-pink-50 hover:bg-pink-100 text-pink-700 rounded-lg border border-pink-200 transition flex items-center gap-1" title="কপি করুন">
+                    <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                    <span>কপি</span>
                   </button>
                 </div>
 
+                <!-- Nagad Box -->
                 <div class="bg-white p-3 rounded-xl border border-orange-200 flex items-center justify-between shadow-sm">
-                  <div class="flex items-center gap-2">
-                    <span class="w-7 h-7 rounded-lg bg-orange-600 text-white font-bold flex items-center justify-center text-[10px]">নগদ</span>
+                  <div class="flex items-center gap-2.5">
+                    <span class="w-8 h-8 rounded-lg bg-orange-600 text-white font-black flex items-center justify-center text-[10px] shadow">নগদ</span>
                     <div>
                       <p class="text-[10px] text-slate-500 font-semibold">নগদ পার্সোনাল নম্বর:</p>
-                      <p class="font-mono font-bold text-slate-800 text-sm" id="payNagadNum">01719-158085</p>
+                      <p class="font-mono font-bold text-slate-900 text-sm tracking-wide" id="payNagadNum">01719-158085</p>
                     </div>
                   </div>
-                  <button type="button" onclick="navigator.clipboard.writeText(document.getElementById('payNagadNum').textContent.replace(/[^0-9]/g, '')); alert('নগদ নম্বর কপি করা হয়েছে!');" class="p-1.5 text-xs text-orange-600 hover:bg-orange-50 rounded" title="কপি করুন">
-                    <i data-lucide="copy" class="w-4 h-4"></i>
+                  <button type="button" onclick="copyNumber('01719158085', 'নগদ নম্বর কপি করা হয়েছে!')" class="px-2.5 py-1 text-xs font-semibold bg-orange-50 hover:bg-orange-100 text-orange-700 rounded-lg border border-orange-200 transition flex items-center gap-1" title="কপি করুন">
+                    <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                    <span>কপি</span>
                   </button>
                 </div>
               </div>
 
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                 <div>
-                  <label class="block text-xs font-semibold text-slate-700 mb-1">
+                  <label class="block text-xs font-bold text-slate-700 mb-1">
                     ট্রানজেকশন আইডি (TrxID) <span class="text-red-500">*</span>
                   </label>
-                  <input type="text" id="paymentTrxId" name="paymentTrxId" placeholder="যেমন: 9K8L7M6N" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs font-mono uppercase">
+                  <input type="text" id="paymentTrxId" name="paymentTrxId" placeholder="যেমন: 9K8L7M6N" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl text-xs font-mono uppercase bg-white">
                 </div>
                 <div>
-                  <label class="block text-xs font-semibold text-slate-700 mb-1">
+                  <label class="block text-xs font-bold text-slate-700 mb-1">
                     যে নম্বর থেকে টাকা পাঠিয়েছেন <span class="text-red-500">*</span>
                   </label>
-                  <input type="tel" id="paymentPhone" name="paymentPhone" placeholder="01XXXXXXXXX" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs font-mono">
+                  <input type="tel" id="paymentPhone" name="paymentPhone" placeholder="01XXXXXXXXX" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl text-xs font-mono bg-white">
                 </div>
               </div>
             </div>
@@ -623,27 +853,66 @@
           </div>
         </div>
 
+        <!-- ==================== REAL-TIME LIVE BOOKING SUMMARY CARD ==================== -->
+        <div class="bg-gradient-to-r from-emerald-50 via-teal-50 to-slate-50 border border-emerald-200/90 rounded-2xl p-4 shadow-sm">
+          <div class="flex items-center justify-between pb-2 mb-2 border-b border-emerald-200/60">
+            <span class="text-xs font-bold text-emerald-950 flex items-center gap-1.5">
+              <i data-lucide="check-square" class="w-4 h-4 text-emerald-600"></i>
+              বুকিং সারসংক্ষেপ (Live Booking Summary)
+            </span>
+            <span class="text-[10px] bg-emerald-600 text-white font-bold px-2 py-0.5 rounded-full">
+              যাচাই করুন
+            </span>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+            <div>
+              <p class="text-slate-500 text-[11px]">তারিখ ও শিফট:</p>
+              <p id="sumDateSlot" class="font-bold text-emerald-950 mt-0.5">নির্বাচন করুন</p>
+            </div>
+            <div>
+              <p class="text-slate-500 text-[11px]">রোগীর নাম:</p>
+              <p id="sumPatientName" class="font-bold text-slate-800 mt-0.5">লিখুন...</p>
+            </div>
+            <div>
+              <p class="text-slate-500 text-[11px]">রোগীর ধরন ও ফি:</p>
+              <p id="sumPatientTypeFee" class="font-bold text-emerald-800 mt-0.5">নতুন রোগী (৫০০/-)</p>
+            </div>
+            <div>
+              <p class="text-slate-500 text-[11px]">পেমেন্ট মোড:</p>
+              <p id="sumPaymentMode" class="font-bold text-slate-800 mt-0.5">ক্লিনিকে নগদ (Cash)</p>
+            </div>
+          </div>
+        </div>
+
         <!-- Consultation Guidelines Alert -->
-        <div class="bg-amber-50 border border-amber-200/80 rounded-2xl p-4 flex items-start gap-3 text-xs text-amber-900">
-          <i data-lucide="info" class="w-5 h-5 text-amber-600 shrink-0 mt-0.5"></i>
+        <div class="bg-amber-50/90 border border-amber-200 rounded-2xl p-4 flex items-start gap-3 text-xs text-amber-950">
+          <div class="w-8 h-8 rounded-xl bg-amber-100 flex items-center justify-center text-amber-700 shrink-0 mt-0.5">
+            <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+          </div>
           <div>
-            <p class="font-bold text-amber-800 text-sm">হোমিওপ্যাথিক রোগীর জন্য বিশেষ পরামর্শ ও নির্দেশিকা:</p>
-            <p class="mt-1 text-amber-700 leading-relaxed">
-              চেম্বারে আসার আধা ঘণ্টা আগে কাঁচা পেঁয়াজ, রসুন বা তামাকজাতীয় তীব্র গন্ধযুক্ত খাদ্য পরিহার করুন। চেম্বারের পরামর্শের সময় প্রতিদিন বিকাল ৪:০০ টা থেকে রাত ১০:০০ টা পর্যন্ত। নির্ধারিত সময়ের অন্তত ১০ মিনিট পূর্বে ক্লিনিকে উপস্থিত থাকবেন।
+            <p class="font-bold text-amber-900 text-sm">হোমিওপ্যাথিক রোগীর জন্য বিশেষ পরামর্শ ও নির্দেশিকা:</p>
+            <p class="mt-1 text-amber-800 leading-relaxed text-xs">
+              ১. চেম্বারে আসার আধা ঘণ্টা আগে কাঁচা পেঁয়াজ, রসুন বা তামাকজাতীয় তীব্র গন্ধযুক্ত খাদ্য পরিহার করুন।<br>
+              ২. চেম্বারের পরামর্শের সময় প্রতিদিন বিকাল ৪:০০ টা থেকে রাত ১০:০০ টা পর্যন্ত। নির্ধারিত সময়ের অন্তত ১০ মিনিট পূর্বে ক্লিনিকে উপস্থিত থাকবেন।
             </p>
           </div>
         </div>
 
         <!-- Submit Button -->
-        <div class="pt-2">
+        <div class="pt-1">
           <button 
             type="submit" 
             id="submitBtn"
-            class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 text-white font-bold text-base shadow-lg shadow-emerald-600/30 hover:shadow-xl transition flex items-center justify-center gap-2 group"
+            class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 text-white font-extrabold text-base sm:text-lg shadow-xl shadow-emerald-700/25 hover:shadow-2xl transition-all duration-300 flex items-center justify-center gap-2 group cursor-pointer"
           >
             <i data-lucide="send" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
             <span>শিডিউল সাবমিট করুন ও টেলিগ্রামে সিরিয়াল নিশ্চিত করুন</span>
           </button>
+          <p class="text-center text-[11px] text-slate-500 mt-2 flex items-center justify-center gap-1">
+            <i data-lucide="lock" class="w-3 h-3 text-emerald-600"></i>
+            আপনার স্বাস্থ্য সংক্রান্ত তথ্য সম্পূর্ণ গোপন ও সুরক্ষিত রাখা হয়।
+          </p>
         </div>
 
       </form>
@@ -652,22 +921,22 @@
   </main>
 
   <!-- Success Confirmation Modal -->
-  <div id="successModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+  <div id="successModal" class="fixed inset-0 bg-slate-950/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-slate-100 overflow-hidden transform transition-all p-6 text-center">
       
       <!-- Icon -->
-      <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 text-emerald-600">
+      <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-3 text-emerald-600 shadow-inner">
         <i data-lucide="check-circle-2" class="w-10 h-10"></i>
       </div>
 
-      <h3 class="text-xl font-bold text-slate-800">অ্যাপয়েন্টমেন্ট সফলভাবে গৃহীত হয়েছে!</h3>
-      <p class="text-xs text-slate-500 mt-1">আপনার শিডিউল সরাসরি ডাঃ মোঃ আলাউদ্দিন সাহেবের টেলিগ্রামে পাঠিয়ে দেওয়া হয়েছে।</p>
+      <h3 class="text-xl font-black text-slate-900 tracking-tight">অ্যাপয়েন্টমেন্ট সফলভাবে গৃহীত হয়েছে!</h3>
+      <p class="text-xs text-slate-500 mt-1">আপনার সিরিয়াল ও বুকিং তথ্য সরাসরি ডাঃ মোঃ আলাউদ্দিন সাহেবের টেলিগ্রামে পাঠিয়ে দেওয়া হয়েছে।</p>
 
       <!-- Serial Card -->
-      <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 my-4 text-left">
-        <div class="flex justify-between items-center pb-2 border-b border-emerald-200/60">
-          <span class="text-xs text-emerald-800 font-semibold">সিরিয়াল টোকেন নং:</span>
-          <span id="modalSerial" class="text-base font-bold text-emerald-900">HC-XXXX</span>
+      <div class="bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 rounded-2xl p-4 my-4 text-left shadow-sm">
+        <div class="flex justify-between items-center pb-2 border-b border-emerald-200/80">
+          <span class="text-xs text-emerald-800 font-bold">সিরিয়াল টোকেন কোড:</span>
+          <span id="modalSerial" class="text-lg font-black text-emerald-950 font-mono">HC-XXXX</span>
         </div>
         <div class="space-y-1.5 mt-2.5 text-xs text-emerald-950">
           <div class="flex justify-between">
@@ -684,12 +953,12 @@
           </div>
           <div class="flex justify-between">
             <span class="text-slate-600">চেম্বার:</span>
-            <span class="font-bold text-emerald-900">চিশতিয়া হোমিও ক্লিনিক</span>
+            <span class="font-bold text-emerald-950">চিশতিয়া হোমিও ক্লিনিক</span>
           </div>
           <div class="flex justify-between">
             <span class="text-slate-600">টেলিগ্রাম নোটিফিকেশন:</span>
             <span class="inline-flex items-center gap-1 font-bold text-emerald-700">
-              <i data-lucide="send" class="w-3 h-3"></i> সেন্ড হয়েছে
+              <i data-lucide="send" class="w-3 h-3"></i> সফলভাবে পাঠানো হয়েছে
             </span>
           </div>
         </div>
@@ -701,9 +970,48 @@
           <i data-lucide="printer" class="w-4 h-4"></i>
           <span>সিরিয়াল স্লিপ প্রিন্ট বা ডাউনলোড করুন</span>
         </a>
-        <button onclick="closeSuccessModal()" class="w-full py-2.5 px-4 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold text-sm transition">
+        <button onclick="closeSuccessModal()" class="w-full py-2.5 px-4 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-700 font-semibold text-sm transition">
           নতুন অ্যাপয়েন্টমেন্ট করুন
         </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Search / Track Serial Modal -->
+  <div id="searchSerialModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden" onclick="closeSearchModal()">
+    <div class="bg-white rounded-3xl max-w-lg w-full shadow-2xl border border-slate-100 overflow-hidden transform transition-all p-6 text-left" onclick="event.stopPropagation()">
+      
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
+            <i data-lucide="search" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-slate-800">আপনার সিরিয়াল বা স্লিপ খুঁজুন</h3>
+            <p class="text-xs text-slate-500">মোবাইল নম্বর বা টোকেন আইডি দিয়ে খুঁজুন</p>
+          </div>
+        </div>
+        <button onclick="closeSearchModal()" class="p-1 text-slate-400 hover:text-slate-600 rounded-full">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="flex gap-2 mb-4">
+        <input 
+          type="text" 
+          id="searchSerialInput" 
+          placeholder="যেমন: 01719158085 বা HC-2026..." 
+          class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500"
+          onkeypress="if(event.key === 'Enter') executeSearchSerial()"
+        >
+        <button onclick="executeSearchSerial()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shrink-0">
+          খুঁজুন
+        </button>
+      </div>
+
+      <div id="searchResultsContainer" class="space-y-2 max-h-60 overflow-y-auto">
+        <p class="text-xs text-slate-400 text-center py-4">আপনার মোবাইল নম্বর বা সিরিয়াল কোড লিখে 'খুঁজুন' বাটনে চাপ দিন।</p>
       </div>
 
     </div>
@@ -730,6 +1038,12 @@
         </p>
       </div>
     </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastNotification" class="fixed bottom-5 right-5 z-50 bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-2xl border border-emerald-400/50 text-xs font-semibold transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-2">
+    <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
+    <span id="toastMessage">নম্বর কপি করা হয়েছে!</span>
   </div>
 
   <!-- Footer -->

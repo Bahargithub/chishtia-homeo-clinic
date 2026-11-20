@@ -237,6 +237,38 @@ app.get('/api/appointment/:id', (req, res) => {
   });
 });
 
+// 4b. Search Appointments by Phone or Serial ID (For Patients)
+app.get('/api/search-appointments', (req, res) => {
+  const q = (req.query.q || '').trim();
+  if (!q || q.length < 3) {
+    return res.status(400).json({ success: false, message: 'কমপক্ষে ৩টি সংখ্যা বা অক্ষর লিখুন।' });
+  }
+  const cleanQ = q.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+  const allAppointments = db.getAppointments();
+  const matched = allAppointments.filter(a => {
+    const cleanId = (a.id || '').replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+    const cleanPhone = (a.phone || '').replace(/[^0-9]/g, '');
+    const cleanPayPhone = (a.paymentPhone || '').replace(/[^0-9]/g, '');
+    return cleanId.includes(cleanQ) || cleanPhone.includes(cleanQ) || cleanPayPhone.includes(cleanQ);
+  }).slice(0, 5);
+
+  res.json({
+    success: true,
+    count: matched.length,
+    results: matched.map(a => ({
+      id: a.id,
+      patientName: a.patientName,
+      appointmentDate: a.appointmentDate,
+      timeSlot: a.timeSlot,
+      status: a.status || 'Pending',
+      paymentMethod: a.paymentMethod,
+      paymentStatus: a.paymentStatus,
+      receiptUrl: `/receipt/${a.id}`,
+      hasPrescription: !!db.getPrescriptionById(a.id)
+    }))
+  });
+});
+
 // 5. Get Public Prescription by ID
 app.get('/api/prescription/:id', (req, res) => {
   const prescription = db.getPrescriptionById(req.params.id);
