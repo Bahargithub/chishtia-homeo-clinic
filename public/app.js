@@ -608,10 +608,41 @@ function closeDoctorLightbox() {
   }, 150);
 }
 
+// Clinic Lightbox Popup Functions
+function openClinicLightbox() {
+  const modal = document.getElementById('clinicLightboxModal');
+  const content = document.getElementById('clinicLightboxContent');
+  if (modal) {
+    modal.classList.remove('hidden');
+    setTimeout(() => {
+      if (content) {
+        content.classList.remove('scale-95');
+        content.classList.add('scale-100');
+      }
+    }, 10);
+    renderIcons();
+  }
+}
+
+function closeClinicLightbox() {
+  const modal = document.getElementById('clinicLightboxModal');
+  const content = document.getElementById('clinicLightboxContent');
+  if (content) {
+    content.classList.remove('scale-100');
+    content.classList.add('scale-95');
+  }
+  setTimeout(() => {
+    if (modal) {
+      modal.classList.add('hidden');
+    }
+  }, 150);
+}
+
 // Global Escape Key Listener
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     closeDoctorLightbox();
+    closeClinicLightbox();
     closeSuccessModal();
     closeSearchModal();
   }
